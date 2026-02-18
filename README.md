@@ -1,7 +1,7 @@
 # Rython Task Bot v2
 
 ![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)
-![CSS](https://img.shields.io/badge/Streamer.Bot-%234285F4.svg?style=for-the-badge&logoColor=white)
+![Streamer.Bot](https://img.shields.io/badge/Streamer.Bot-%234285F4.svg?style=for-the-badge&logoColor=white)
 ![Twitch](https://img.shields.io/badge/twitch-8957E5?style=for-the-badge&logo=twitch&logoColor=white)
 ![YouTube](https://img.shields.io/badge/youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
 
@@ -19,6 +19,10 @@ Task Bot for Co-working streamers on Twitch & YouTube.
   - Subscribers and above
   - etc.
 - Easy customizable with other Streamer.Bot actions
+
+## Widget (Optional)
+
+- [Task Widget Repository](https://github.com/liyunze-coding/task-bot-v2-widget)
 
 ## Setup Instructions
 
@@ -44,6 +48,8 @@ Task Bot for Co-working streamers on Twitch & YouTube.
 5. You may need to go to the Commands tab and enable the commands.
 
 ## Usage
+
+(Work in progress)
 
 ### Add task:
 
@@ -82,8 +88,6 @@ Task Bot for Co-working streamers on Twitch & YouTube.
     
     Aliases:
     - `!admindelete`
-
-(Work in progress)
 
 ## Credits
 
