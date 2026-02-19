@@ -51,43 +51,23 @@ Task Bot for Co-working streamers on Twitch & YouTube.
 
 (Work in progress)
 
-### Add task:
 
-- `!task <task name>`
+### Commands
 
-    Aliases:
-    - `!a`
-    - `!add`
-    - `!taskadd`
+-   `!add [task]` : add the task to your list
+-   `!focus (number / task)` : focus on ONE task
+-   `!edit (number) [task]` : edit the task at the specified index
+-   `!done (number / task)` : mark task as done
+-   `!undone (number / task)` : mark task as incomplete
+-   `!remove (number / task)` : remove task from list
+-   `!unfocus` : unfocuses on your focused task
+-   `!clearmydone` : Clears all your completed tasks
 
-### Edit task:
+### Moderators only
 
-- `!edit <number> <task name>`
-    
-    Aliases:
-    - `!e`
-    - `!taskedit`
-
-### Complete task:
-
-- `!done <number>`
-- `!done <task name>`
-    
-    Aliases:
-    - `!f`
-    - `!finish`
-    - `!complete`
-
-### Remove task:
-
-- `!remove <number>`
-
-### Admin delete user's tasks:
-
-- `!adel @username`
-    
-    Aliases:
-    - `!admindelete`
+-   `!clearall` - Clear all tasks
+-   `!cleardone` - Clear all completed tasks
+-   `!adel @user` - Remove all tasks from a user
 
 ## Credits
 
