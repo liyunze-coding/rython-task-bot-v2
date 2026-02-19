@@ -22,6 +22,8 @@ Task Bot for Co-working streamers on Twitch & YouTube.
 
 ## Widget (Optional)
 
+<img src="./images/widget.png" alt="Widget" width="300"/>
+
 - [Task Widget Repository](https://github.com/liyunze-coding/task-bot-v2-widget)
 
 ## Setup Instructions
