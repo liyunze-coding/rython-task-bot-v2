@@ -1,3 +1,18 @@
+// Author: rythondev , https://twitch.tv/rythondev , https://x.com/rythondev, https://ko-fi.com/rython
+// Contact: rythondev@gmail.com , or on the above mentioned social media.
+//
+// This code is licensed under the GNU General Public License Version 3 (GPLv3).
+// 
+// The GPLv3 is a free software license that ensures end users have the freedom to run,
+// study, share, and modify the software. Key provisions include:
+// 
+// - Copyleft: Modified versions of the code must also be licensed under the GPLv3.
+// - Source Code: You must provide access to the source code when distributing the software.
+// - Credit: You must credit the original author of the software, by mentioning either contact e-mail or their social media.
+// - No Warranty: The software is provided "as-is," without warranty of any kind.
+// 
+// For more details, see https://www.gnu.org/licenses/gpl-3.0.en.html.
+
 using Streamer.bot.Plugin.Interface;
 using Streamer.bot.Plugin.Interface.Model;
 using Streamer.bot.Plugin.Interface.Enums;
@@ -234,6 +249,12 @@ public class CPHInline
         int newIndex = this.taskData[key].tasks.Count - 1; // 1-based index for display
         Broadcast(new { mode = "add", task = taskName, completed = completed, focused = focused });
         return new Response<(int, string)>(true, (newIndex, taskName), null);
+    }
+
+    public bool HelpCommand()
+    {
+        Respond("Rython Task Bot Commands: !task !edit !remove !done. For mods, you can do !adel @user. More commmands here: https://github.com/liyunze-coding/rython-task-bot-v2#usage");
+        return true;
     }
 
     public bool AddCommand()
@@ -1129,7 +1150,7 @@ public class CPHInline
         Cleanup(false);
         SaveTasks();
         Broadcast(new { mode = "clearns" });
-        Respond("All completed tasks have been cleared!");
+        Respond("All tasks (excluding the streamer's) have been cleared!");
         return true;
     }
 }
