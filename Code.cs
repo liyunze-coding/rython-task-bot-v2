@@ -26,7 +26,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #region Data Models
-
 public class Task
 {
     public string Name;
@@ -49,13 +48,11 @@ public class UserData
 {
     public string username;
     public List<Task> tasks;
-    public uint totalIncompleteCount;
-    public uint totalCompletedCount;
+    public int totalCompletedCount;
     public UserData(List<Task> tasks, string username)
     {
         this.username = username;
         this.tasks = tasks;
-        this.totalIncompleteCount = 0;
         this.totalCompletedCount = 0;
     }
 }
@@ -83,14 +80,16 @@ public class Response<T> : Response
 }
 
 #endregion
-
 #region Helper Classes
-
 public static class TaskHelpers
 {
-    public static readonly char[] Separators = { '|', ',', ';' };
+    public static readonly char[] Separators =
+    {
+        '|',
+        ',',
+        ';'
+    };
     public const int CharacterLimit = 450;
-
     public static List<string> SplitTasks(string tasks)
     {
         return tasks.Split(Separators, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToList();
@@ -103,6 +102,7 @@ public static class TaskHelpers
             int index = n - 1;
             return (index >= 0 && index < tasks.Count) ? index : -1;
         }
+
         return tasks.FindIndex(t => t.Name.Equals(input, StringComparison.OrdinalIgnoreCase));
     }
 
@@ -119,8 +119,12 @@ public static class TaskHelpers
         if (splittedInput.Count == 0)
         {
             int focusedTaskIndex = getFocusedTask() + 1;
-            return new List<string> { focusedTaskIndex.ToString() };
+            return new List<string>
+            {
+                focusedTaskIndex.ToString()
+            };
         }
+
         return splittedInput;
     }
 
@@ -140,13 +144,17 @@ public static class TaskHelpers
             if (completedTasks.Count() == 1)
             {
                 int soloCompletedTaskIndex = userTasks.FindIndex(t => t.Completed) + 1;
-                return new List<string> { soloCompletedTaskIndex.ToString() };
+                return new List<string>
+                {
+                    soloCompletedTaskIndex.ToString()
+                };
             }
         }
         else
         {
             return splittedInput;
         }
+
         return new List<string>();
     }
 
@@ -156,7 +164,6 @@ public static class TaskHelpers
         rawInput = rawInput.Trim();
         bool hasFocusedTask = focusedTaskIndex > -1;
         string[] spaceSeparated = rawInput.Split(new[] { ' ' }, 2);
-
         if (spaceSeparated.Length < 2)
         {
             validEditInput = false;
@@ -168,7 +175,6 @@ public static class TaskHelpers
 
         string numberString = spaceSeparated[0];
         string newTask = spaceSeparated.Length > 1 ? spaceSeparated[1] : rawInput;
-
         if (!int.TryParse(numberString, out int index))
         {
             validEditInput = false;
@@ -182,6 +188,7 @@ public static class TaskHelpers
         {
             return new Response<(int, string)>(true, (index - 1, newTask), null);
         }
+
         return new Response<(int, string)>(true, (focusedTaskIndex, rawInput), null);
     }
 }
@@ -195,26 +202,53 @@ public static class MessageBuilder
             string response = $"Added: {String.Join(" | ", added)}";
             return response.Length > TaskHelpers.CharacterLimit ? "All the tasks have been added!" : response;
         }
+
         if (added.Count == 0 && failed.Count == 1)
         {
             return failed[0].Item2;
         }
+
         if (added.Count == 0 && failed.Count > 1)
         {
             string response = $"Failed: {String.Join(", ", failed.Select(f => f.Item1))}";
             return response.Length > TaskHelpers.CharacterLimit ? "None of the tasks successfully added" : response;
         }
+
         if (added.Count > 0 && failed.Count > 0)
         {
             string response = $"Added: {String.Join(" | ", added)} | Failed: {String.Join(", ", failed.Select(f => f.Item1))}";
             return response.Length > TaskHelpers.CharacterLimit ? "Some tasks successful but some failed :p" : response;
         }
+
         return "No tasks to add";
     }
 
-    public static string BuildLogResponseMessage(List<string> added, List<(string, string)> failed)
+    public static string BuildLogResponseMessage(List<string> logged, List<(string, string)> failed)
     {
-        return BuildAddResponseMessage(added, failed);
+        if (logged.Count > 0 && failed.Count == 0)
+        {
+            string response = $"Logged: {String.Join(" | ", logged)}";
+            return response.Length > TaskHelpers.CharacterLimit ? "All the tasks have been logged!" : response;
+        }
+
+        if (logged.Count == 0 && failed.Count == 1)
+        {
+            return failed[0].Item2;
+        }
+
+        if (logged.Count == 0 && failed.Count > 1)
+        {
+            string response = $"Failed: {String.Join(", ", failed.Select(f => f.Item1))}";
+            return response.Length > TaskHelpers.CharacterLimit ? "None of the tasks successfully logged" : response;
+        }
+
+        if (logged.Count > 0 && failed.Count > 0)
+        {
+            string response = $"Added: {String.Join(" | ", logged)} | Failed: {String.Join(", ", failed.Select(f => f.Item1))}";
+            return response.Length > TaskHelpers.CharacterLimit ? "Some tasks successful but some failed :p" : response;
+        }
+
+        return "No tasks to log";
     }
 
     public static string BuildRemoveMessage(List<string> tasksRemoved, List<string> tasksFailedToRemove)
@@ -223,6 +257,7 @@ public static class MessageBuilder
         {
             return "Removed task(s)!";
         }
+
         return $"Failed to remove: {String.Join(", ", tasksFailedToRemove)}";
     }
 
@@ -232,10 +267,12 @@ public static class MessageBuilder
         {
             return "Task completed!";
         }
+
         if (tasksFailedToComplete.Count == 0)
         {
             return "Completed all task(s) specified!";
         }
+
         return $"Failed to complete: {String.Join(", ", tasksFailedToComplete)}";
     }
 
@@ -245,18 +282,18 @@ public static class MessageBuilder
         {
             return "Task marked as incomplete!";
         }
+
         if (tasksFailedToComplete.Count == 0)
         {
             return "Task(s) marked as incomplete!";
         }
+
         return $"Failed to parse: {String.Join(", ", tasksFailedToComplete)}";
     }
 }
 
 #endregion
-
 #region Task Operations
-
 public class TaskOperations
 {
     private Dictionary<string, UserData> taskData;
@@ -264,13 +301,7 @@ public class TaskOperations
     private readonly Func<string> getKey;
     private readonly Func<string, string> getKeyByUsername;
     private readonly Func<string> getUsername;
-
-    public TaskOperations(
-        Dictionary<string, UserData> taskData,
-        Action<object, string> broadcast,
-        Func<string> getKey,
-        Func<string, string> getKeyByUsername,
-        Func<string> getUsername)
+    public TaskOperations(Dictionary<string, UserData> taskData, Action<object, string> broadcast, Func<string> getKey, Func<string, string> getKeyByUsername, Func<string> getUsername)
     {
         this.taskData = taskData;
         this.broadcast = broadcast;
@@ -281,17 +312,14 @@ public class TaskOperations
 
     public void SetTaskData(Dictionary<string, UserData> data) => this.taskData = data;
     public Dictionary<string, UserData> GetTaskData() => this.taskData;
-
     public List<Task> ListUserTasks(string userKey = null)
     {
         var emptyList = new List<Task>();
         if (taskData == null || taskData.Count == 0)
             return emptyList;
-
         string key = userKey ?? getKey();
         if (!taskData.TryGetValue(key, out var userData))
             return emptyList;
-
         return userData.tasks.Count == 0 ? emptyList : taskData[key].tasks;
     }
 
@@ -303,6 +331,7 @@ public class TaskOperations
         {
             return userTasks.FindIndex(t => !t.Completed);
         }
+
         return userTasks.FindIndex(t => t.Focused);
     }
 
@@ -313,7 +342,6 @@ public class TaskOperations
             return new Response<(int, string)>(false, default, "Task cannot be empty");
         if (int.TryParse(taskName, out _))
             return new Response<(int, string)>(false, default, $"'{taskName}' cannot be a number");
-
         string key = getKey();
         if (!taskData.ContainsKey(key))
         {
@@ -323,9 +351,13 @@ public class TaskOperations
 
         if (taskData[key].tasks.Any(t => t.Name.Equals(taskName, StringComparison.OrdinalIgnoreCase) && !t.Completed))
             return new Response<(int, string)>(false, default, $"Error: Task '{taskName}' already exists");
-
         taskData[key].username = getUsername();
         taskData[key].tasks.Add(new Task(taskName, completed, focused));
+        if (completed)
+        {
+            taskData[key].totalCompletedCount++;
+        }
+
         int newIndex = taskData[key].tasks.Count - 1;
         broadcast(new { mode = "add", task = taskName, completed = completed, focused = focused }, null);
         return new Response<(int, string)>(true, (newIndex, taskName), null);
@@ -338,11 +370,9 @@ public class TaskOperations
             return new Response<(string, string)>(false, default, "Error 404: Tasks not found");
         if (index >= userTasks.Count || index < 0)
             return new Response<(string, string)>(false, default, "Error: Invalid task number");
-
         bool taskAlreadyExists = userTasks.FindIndex(t => t.Name.Equals(newTask, StringComparison.OrdinalIgnoreCase)) > -1;
         if (taskAlreadyExists)
             return new Response<(string, string)>(false, default, "Error: Task already exists");
-
         string oldName = userTasks[index].Name;
         userTasks[index].Name = newTask;
         SaveIntoTasks(userTasks);
@@ -355,10 +385,8 @@ public class TaskOperations
         bool containsSeparators = rawInput.IndexOfAny(TaskHelpers.Separators) >= 0;
         if (containsSeparators)
             return new Response<(int, string)>(false, default, "Cannot focus on multiple tasks");
-
         var tasks = ListUserTasks();
         int indexByName = tasks.FindIndex(t => t.Name.Equals(rawInput, StringComparison.OrdinalIgnoreCase));
-
         if (int.TryParse(rawInput, out int n))
         {
             n = n - 1;
@@ -366,7 +394,6 @@ public class TaskOperations
                 return new Response<(int, string)>(false, default, "Index out of range.");
             if (tasks[n].Completed)
                 return new Response<(int, string)>(false, default, "Cannot focus on completed task.");
-
             UnfocusAll(tasks);
             tasks[n].Focused = true;
             SaveIntoTasks(tasks);
@@ -378,7 +405,6 @@ public class TaskOperations
             n = indexByName;
             if (tasks[n].Completed)
                 return new Response<(int, string)>(false, default, "Cannot focus on completed task.");
-
             UnfocusAll(tasks);
             tasks[n].Focused = true;
             SaveIntoTasks(tasks);
@@ -393,6 +419,7 @@ public class TaskOperations
                 broadcast(new { mode = "focus", index = response.Data.Item1 }, null);
                 return new Response<(int, string)>(true, response.Data, null);
             }
+
             return new Response<(int, string)>(false, default, response.ErrorMsg);
         }
     }
@@ -460,40 +487,26 @@ public class TaskOperations
 
     public void FilterToStreamers(List<string> streamerUsernames)
     {
-        taskData = taskData
-            .Where(kvp => streamerUsernames.Any(s => string.Equals(s, kvp.Value.username, StringComparison.OrdinalIgnoreCase)))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        taskData = taskData.Where(kvp => streamerUsernames.Any(s => string.Equals(s, kvp.Value.username, StringComparison.OrdinalIgnoreCase))).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 }
 
 #endregion
-
 #region Main Command Handler
-
 public class CPHInline
 {
     private Dictionary<string, UserData> taskData = new Dictionary<string, UserData>();
     private TaskOperations operations;
-
     public void Init()
     {
         string taskDataString = CPH.GetGlobalVar<string>("rython-task-bot", true);
         taskData = JsonConvert.DeserializeObject<Dictionary<string, UserData>>(taskDataString) ?? new Dictionary<string, UserData>();
-
-        operations = new TaskOperations(
-            taskData,
-            Broadcast,
-            () => GetKey(),
-            (username) => GetKey(username),
-            () => GetUsername()
-        );
-
+        operations = new TaskOperations(taskData, Broadcast, () => GetKey(), (username) => GetKey(username), () => GetUsername());
         operations.Cleanup(false);
         SaveTasks();
     }
 
     #region Platform Helpers
-
     private void Broadcast(object body, string key)
     {
         string json = JsonConvert.SerializeObject(new { source = "rython-task-bot", id = key ?? GetKey(), body = body, username = GetUsername() });
@@ -504,7 +517,11 @@ public class CPHInline
     {
         TwitchUserInfo twitchInfo = CPH.TwitchGetBroadcaster();
         var youtubeInfo = CPH.YouTubeGetBroadcaster();
-        return new List<string> { twitchInfo.UserName, youtubeInfo.UserName };
+        return new List<string>
+        {
+            twitchInfo.UserName,
+            youtubeInfo.UserName
+        };
     }
 
     private string GetUsername(string key = null)
@@ -514,6 +531,7 @@ public class CPHInline
             CPH.TryGetArg("user", out string username);
             return username;
         }
+
         return taskData[key].username;
     }
 
@@ -523,18 +541,24 @@ public class CPHInline
         {
             if (username[0] == '@')
                 username = username.Substring(1);
-
             foreach (var item in taskData)
             {
                 if (item.Value.username.Equals(username, StringComparison.OrdinalIgnoreCase))
                     return item.Key;
             }
+
             return "";
         }
 
         CPH.TryGetArg("userType", out string platform);
         CPH.TryGetArg("userId", out string userId);
         return $"{platform}-{userId}";
+    }
+
+    private void IncrementDoneCount(int count = 1)
+    {
+        string key = GetKey();
+        taskData[key].totalCompletedCount += count;
     }
 
     private void SaveTasks()
@@ -561,9 +585,7 @@ public class CPHInline
     }
 
     #endregion
-
     #region Commands
-
     public bool HelpCommand()
     {
         Respond("Rython Task Bot Commands: !task !edit !remove !done. For mods, you can do !adel @user. More commmands here: https://github.com/liyunze-coding/rython-task-bot-v2#usage");
@@ -591,7 +613,8 @@ public class CPHInline
                 failed.Add((taskString, response.ErrorMsg));
         }
 
-        if (added.Count > 0) SaveTasks();
+        if (added.Count > 0)
+            SaveTasks();
         Respond(MessageBuilder.BuildAddResponseMessage(added, failed));
         return true;
     }
@@ -617,7 +640,8 @@ public class CPHInline
                 failed.Add((taskString, response.ErrorMsg));
         }
 
-        if (logged.Count > 0) SaveTasks();
+        if (logged.Count > 0)
+            SaveTasks();
         Respond(MessageBuilder.BuildLogResponseMessage(logged, failed));
         return true;
     }
@@ -643,6 +667,7 @@ public class CPHInline
             Respond("You do not have a focused task.");
             return true;
         }
+
         Respond($"Current focused task: {focusedTaskIndex + 1}. {userTasks[focusedTaskIndex].Name}");
         return true;
     }
@@ -686,9 +711,7 @@ public class CPHInline
         }
 
         var result = operations.EditTask(editData.Data.Item1, editData.Data.Item2);
-        Respond(result.Success
-            ? $"Task '{result.Data.Item1}' has been edited to '{result.Data.Item2}'"
-            : result.ErrorMsg);
+        Respond(result.Success ? $"Task '{result.Data.Item1}' has been edited to '{result.Data.Item2}'" : result.ErrorMsg);
         SaveTasks();
         return true;
     }
@@ -699,7 +722,6 @@ public class CPHInline
         rawInput = rawInput.Trim();
         string key = null;
         bool someoneElse = false;
-
         if (!String.IsNullOrWhiteSpace(rawInput))
         {
             key = GetKey(rawInput);
@@ -708,6 +730,7 @@ public class CPHInline
                 Respond("User not found");
                 return false;
             }
+
             someoneElse = true;
         }
 
@@ -720,11 +743,7 @@ public class CPHInline
 
         var incompleteTasks = userTasks.Select((t, index) => new { t, index }).Where(x => !x.t.Completed);
         string message = String.Join(" | ", incompleteTasks.Select(x => $"{x.index + 1}. {(x.t.Focused ? "(ongoing) " : "")}{x.t.Name}"));
-
-        message = someoneElse
-            ? $"{GetUsername(key)}'s tasks: {message}"
-            : $"{incompleteTasks.Count()} tasks pending: {message}";
-
+        message = someoneElse ? $"{GetUsername(key)}'s tasks: {message}" : $"{incompleteTasks.Count()} tasks pending: {message}";
         Respond(message);
         return true;
     }
@@ -735,7 +754,6 @@ public class CPHInline
         rawInput = rawInput.Trim();
         string key = null;
         bool someoneElse = false;
-
         if (!String.IsNullOrWhiteSpace(rawInput))
         {
             key = GetKey(rawInput);
@@ -744,6 +762,7 @@ public class CPHInline
                 Respond("User not found");
                 return false;
             }
+
             someoneElse = true;
         }
 
@@ -756,11 +775,7 @@ public class CPHInline
 
         var completedTasks = userTasks.Select((t, index) => new { t, index }).Where(x => x.t.Completed);
         string message = String.Join(" | ", completedTasks.Select(x => $"{x.index + 1}. {x.t.Name}"));
-
-        message = someoneElse
-            ? $"{GetUsername(key)}'s tasks: {message}"
-            : $"Completed {completedTasks.Count()} tasks: {message}";
-
+        message = someoneElse ? $"{GetUsername(key)}'s tasks: {message}" : $"Completed {completedTasks.Count()} tasks: {message}";
         Respond(message);
         return true;
     }
@@ -772,7 +787,6 @@ public class CPHInline
         string separator = "; ";
         if (rawInput.Length == 1 && ";,|".Contains(rawInput))
             separator = $"{rawInput} ";
-
         var userTasks = operations.ListUserTasks();
         string message = String.Join(separator, userTasks.Where(t => !t.Completed).Select(t => t.Name));
         Respond(message);
@@ -799,7 +813,6 @@ public class CPHInline
         var tasksRemoved = new List<string>();
         var tasksFailedToRemove = new List<string>();
         var taskIndices = new List<int>();
-
         foreach (string task in tasksToBeRemoved)
         {
             int index = TaskHelpers.GetTaskIndex(userTasks, task);
@@ -837,8 +850,8 @@ public class CPHInline
     {
         CPH.TryGetArg("rawInput", out string rawInput);
         string[] spaceSeparated = rawInput.Split(new[] { ' ' }, 2);
-        if (spaceSeparated.Length == 0) return false;
-
+        if (spaceSeparated.Length == 0)
+            return false;
         string user = spaceSeparated[0];
         string key = GetKey(user);
         if (key == "")
@@ -857,6 +870,7 @@ public class CPHInline
     public bool DoneCommand()
     {
         CPH.TryGetArg("rawInput", out string rawInput);
+        rawInput = rawInput.Trim();
         var userTasks = operations.ListUserTasks();
         if (userTasks.Count == 0)
         {
@@ -874,7 +888,6 @@ public class CPHInline
         var tasksCompleted = new List<string>();
         var tasksFailedToComplete = new List<string>();
         var taskIndices = new List<int>();
-
         foreach (string task in tasksToBeCompleted)
         {
             int index = TaskHelpers.GetTaskIndex(userTasks, task);
@@ -899,8 +912,11 @@ public class CPHInline
         {
             userTasks[i].Completed = true;
             userTasks[i].Focused = false;
+
             Broadcast(new { mode = "done", index = i }, null);
         }
+
+        IncrementDoneCount(taskIndices.Count);
 
         operations.SaveIntoTasks(userTasks);
         SaveTasks();
@@ -937,7 +953,6 @@ public class CPHInline
         var tasksCompleted = new List<string>();
         var tasksFailedToComplete = new List<string>();
         var taskIndices = new List<int>();
-
         foreach (string task in tasksToBeCompleted)
         {
             int index = TaskHelpers.GetTaskIndex(userTasks, task);
@@ -1011,8 +1026,6 @@ public class CPHInline
         Respond("All tasks (excluding the streamer's) have been cleared!");
         return true;
     }
-
     #endregion
 }
-
 #endregion
