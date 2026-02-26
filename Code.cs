@@ -594,12 +594,19 @@ public class CPHInline
         switch (platform)
         {
             case "twitch":
-                CPH.TryGetArg("msgId", out string msgId);
-                CPH.TwitchReplyToMessage(message, msgId);
+                CPH.TryGetArg("msgId", out string twitchMsgId);
+                CPH.TwitchReplyToMessage(message, twitchMsgId);
                 break;
             case "youtube":
                 CPH.TryGetArg("user", out string YTUser);
                 CPH.SendYouTubeMessage($"@{YTUser} {message}");
+                break;
+            case "kick":
+                CPH.TryGetArg("user", out string kickUser);
+                CPH.TryGetArg("msgId", out string kickMsgId);
+                CPH.KickReplyToMessage($"@{kickUser} {message}", kickMsgId);
+                break;
+            default:
                 break;
         }
     }
