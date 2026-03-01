@@ -4,14 +4,15 @@
 ![Streamer.Bot](https://img.shields.io/badge/Streamer.Bot-%234285F4.svg?style=for-the-badge&logoColor=white)
 ![Twitch](https://img.shields.io/badge/twitch-8957E5?style=for-the-badge&logo=twitch&logoColor=white)
 ![YouTube](https://img.shields.io/badge/youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
+![Kick](https://img.shields.io/badge/kick-53FC18?style=for-the-badge&logo=kick&logoColor=white)
 
 Task Bot for Co-working streamers on Twitch & YouTube.
 
 ## Why this Task Bot?
 
 - Browser Source is optional
-  - You only need Streamer.Bot running to have it working with Twitch chat
-- Compatible with Twitch and YouTube; possibly extending to Kick and Trovo
+  - You only need Streamer.Bot running to have it working with chat
+- Compatible with Twitch, YouTube and Kick; possibly extending to Trovo
 - Task data is accessible via Streamer.Bot global variable
 - Commands' permissions are easily configurable:
   - Mod (and Streamer) only
