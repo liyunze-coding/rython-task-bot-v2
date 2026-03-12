@@ -236,8 +236,8 @@ public static class MessageBuilder
     {
         if (logged.Count > 0 && failed.Count == 0)
         {
-            string response = $"Task List Update ♡ → The task(s) {String.Join(", ", logged)} have been logged! Good luck! 🍀";
-            return response.Length > TaskHelpers.CharacterLimit ? "Task List Update ♡ →  Your task(s) have been logged! Good luck! 🍀" : response;
+            string response = $"Task List Update ♡ → The task(s) {String.Join(", ", logged)} have been logged! Good job! 🍀";
+            return response.Length > TaskHelpers.CharacterLimit ? "Task List Update ♡ →  Your task(s) have been logged! Good job! 🍀" : response;
         }
 
         if (logged.Count == 0 && failed.Count == 1)
@@ -463,6 +463,8 @@ public class TaskOperations
             tasks[i].Focused = false;
     }
 
+
+
     public void SaveIntoTasks(List<Task> tasks)
     {
         string key = getKey();
@@ -532,7 +534,7 @@ public class CPHInline
         SaveTasks();
     }
 
-#region Platform Helpers
+    #region Platform Helpers
     private void Broadcast(object body, string key)
     {
         string json = JsonConvert.SerializeObject(new { source = "rython-task-bot", id = key ?? GetKey(), body = body, username = GetUsername() });
@@ -594,6 +596,16 @@ public class CPHInline
         CPH.SetGlobalVar("rython-task-bot", taskDataString, true);
     }
 
+    private int GetCount(string? key = null)
+    {
+        if (String.IsNullOrEmpty(key))
+        {
+            key = GetKey();
+        }
+
+        return taskData[key].TotalCompletedCount;
+    }
+
     private void Respond(string message)
     {
         CPH.TryGetArg("userType", out string platform);
@@ -617,8 +629,8 @@ public class CPHInline
         }
     }
 
-#endregion
-#region Commands
+    #endregion
+    #region Commands
     public bool HelpCommand()
     {
         Respond("📝 Rython Task Bot Commands: !task !edit !remove !done. For mods, you can do !adel @user. More commmands here: https://github.com/liyunze-coding/rython-task-bot-v2#usage");
@@ -1073,6 +1085,37 @@ public class CPHInline
         Respond("📝 All tasks (excluding the streamer's) have been cleared!");
         return true;
     }
-#endregion
+
+    public bool CountCommand()
+    {
+        CPH.TryGetArg("rawInput", out string rawInput);
+        rawInput = rawInput.Trim();
+        string key = null;
+        bool someoneElse = false;
+        if (!String.IsNullOrWhiteSpace(rawInput))
+        {
+            key = GetKey(rawInput);
+            if (key == "")
+            {
+                Respond("❌ User not found");
+                return false;
+            }
+
+            someoneElse = true;
+        }
+
+        int completedCount = GetCount(key);
+        if (someoneElse)
+        {
+            string username = GetUsername(key);
+            Respond($"{username} has completed {completedCount} task(s) so far!");
+        }
+        else
+        {
+            Respond($"You have completed {completedCount} task(s) so far!");
+        }
+        return true;
+    }
+    #endregion
 }
 #endregion
