@@ -377,6 +377,8 @@ public class TaskOperations
 
         if (taskData[key].Tasks.Any(t => t.Name.Equals(taskName, StringComparison.OrdinalIgnoreCase) && !t.Completed))
             return new Response<(int, string)>(false, default, $"❌ Error: Task '{taskName}' already exists");
+        if (focused)
+            Unfocus();
         taskData[key].Username = getUsername();
         taskData[key].Tasks.Add(new Task(taskName, completed, focused));
         if (completed)
@@ -453,17 +455,17 @@ public class TaskOperations
     public void Unfocus()
     {
         var tasks = ListUserTasks();
-        UnfocusAll(tasks);
+        tasks = UnfocusAll(tasks);
         SaveIntoTasks(tasks);
     }
 
-    private void UnfocusAll(List<Task> tasks)
+    private List<Task> UnfocusAll(List<Task> tasks)
     {
         for (int i = 0; i < tasks.Count; i++)
             tasks[i].Focused = false;
+        
+        return tasks;
     }
-
-
 
     public void SaveIntoTasks(List<Task> tasks)
     {
@@ -534,7 +536,7 @@ public class CPHInline
         SaveTasks();
     }
 
-    #region Platform Helpers
+#region Platform Helpers
     private void Broadcast(object body, string key)
     {
         string json = JsonConvert.SerializeObject(new { source = "rython-task-bot", id = key ?? GetKey(), body = body, username = GetUsername() });
@@ -629,8 +631,8 @@ public class CPHInline
         }
     }
 
-    #endregion
-    #region Commands
+#endregion
+#region Commands
     public bool HelpCommand()
     {
         Respond("📝 Rython Task Bot Commands: !task !edit !remove !done. For mods, you can do !adel @user. More commmands here: https://github.com/liyunze-coding/rython-task-bot-v2#usage");
@@ -1114,8 +1116,9 @@ public class CPHInline
         {
             Respond($"You have completed {completedCount} task(s) so far!");
         }
+
         return true;
     }
-    #endregion
+#endregion
 }
 #endregion
