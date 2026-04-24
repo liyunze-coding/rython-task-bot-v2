@@ -463,7 +463,6 @@ public class TaskOperations
     {
         for (int i = 0; i < tasks.Count; i++)
             tasks[i].Focused = false;
-        
         return tasks;
     }
 
@@ -610,7 +609,37 @@ public class CPHInline
 
     private void Respond(string message)
     {
+        int maxChars = 500;
+
         CPH.TryGetArg("userType", out string platform);
+        if (platform == "youtube") {
+            maxChars = 200;
+        }
+        
+        string[] words = message.Split(' ');
+        string output = "";
+        foreach (string word in words)
+        {
+            if ((output + " " + word).Length > maxChars)
+            {
+                SendMessage(output.Trim(), platform);
+                output = word;
+                CPH.Wait(100);
+            }
+            else
+            {
+                output += (string.IsNullOrEmpty(output) ? "" : " ") + word;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(output))
+        {
+            SendMessage(output.Trim(), platform);
+        }
+    }
+
+    private void SendMessage(string message, string platform = "twitch")
+    {
         switch (platform)
         {
             case "twitch":
