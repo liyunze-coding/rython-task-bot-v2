@@ -1,0 +1,131 @@
+/* ========================================
+   🎨 CUSTOMIZATION VARIABLES
+   Change the values below to customize!
+   ======================================== */
+:root {
+	/* -- Background & Panel -- */
+	--panel-header-background: #141414; /* Header background color */
+	--panel-background: #141414c0; /* Body background color */
+	--panel-border-radius: 12px; /* Roundness of panel corners */
+
+	/* -- Text Colors -- */
+	--text-color: #fafafa; /* Main text color */
+	--done-task-color: #aaa; /* Color of completed tasks */
+	--focused-text-color: #141414; /* Text color when a task is focused */
+
+	/* -- Focused Task Highlight -- */
+	--focused-background: #ffffff; /* Background color of the focused task */
+	--focused-border-radius: 4px; /* Roundness of focused task corners */
+	--focused-padding: 2px 4px; /* Spacing inside focused task highlight */
+
+	/* -- Font Sizes -- */
+	--title-font-size: 1.5rem; /* Size of the panel title */
+	--section-title-font-size: 1.25rem; /* Size of section headings */
+	--header-font-size: 14px; /* Size of the header text */
+	--header-subtitle-font-size: 13px; /* Size of the header subtitle */
+	--task-font-size: 1.2rem; /* Size of task text */
+
+	/* -- Borders & Dividers -- */
+	--header-border-color: #e0dbd5; /* Line below the header */
+	--section-border-color: white; /* Line between sections */
+
+	/* -- Spacing -- */
+	--header-padding: 16px 16px 12px; /* Spacing inside the header */
+	--section-padding: 10px 16px 6px; /* Spacing inside each section */
+	--task-gap: 6px; /* Gap between task items */
+	--task-padding: 3px 0; /* Spacing around each task */
+}
+
+@font-face {
+	font-family: "Fredoka";
+	src: url("./fonts/Fredoka-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Fredoka";
+	src: url("./fonts/Fredoka-Bold.ttf") format("truetype");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+body {
+	font-family: "Fredoka", Roboto, sans-serif;
+	background: rgba(0, 0, 0, 0);
+}
+
+.task-panel {
+	width: 100%;
+	height: 100vh;
+	background: var(--panel-background);
+	border-radius: var(--panel-border-radius);
+}
+
+.panel-header {
+	padding: var(--header-padding);
+	font-weight: 700;
+	font-size: var(--header-font-size);
+	color: var(--text-color);
+	background: var(--panel-header-background);
+}
+
+.panel-header span:last-child {
+	font-weight: 600;
+	color: var(--text-color);
+	font-size: var(--header-subtitle-font-size);
+}
+
+.section {
+	padding: var(--section-padding);
+	border-top: 2px solid var(--section-border-color);
+}
+
+.section:last-child {
+	padding-bottom: 12px;
+}
+
+.section-title {
+	font-weight: 700;
+	font-size: var(--section-title-font-size);
+	color: var(--text-color);
+	margin-bottom: 4px;
+}
+
+.task {
+	gap: var(--task-gap);
+	padding: var(--task-padding);
+	font-size: var(--task-font-size);
+	color: var(--text-color);
+	line-height: 1.4;
+	width: fit-content;
+}
+
+.section-title.has-user-color {
+    color: var(--user-color); /*auto user color*/
+}
+
+.task.done,
+.task.focused.done {
+	text-decoration: line-through;
+	color: var(--done-task-color);
+}
+
+.task.focused:not(.done) {
+	background: var(--focused-background);
+	color: var(--focused-text-color);
+	padding: var(--focused-padding);
+	border-radius: var(--focused-border-radius);
+}
+
+#title {
+	font-size: var(--title-font-size);
+}
+
+.task-number {
+	flex-shrink: 0;
+	min-width: 16px;
+	text-align: right;
+}
