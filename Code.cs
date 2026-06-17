@@ -178,7 +178,7 @@ public static class TaskHelpers
             validEditInput = false;
             if (!hasFocusedTask)
             {
-                return new Response<(int, string)>(false, default, "❌ Error: Not enough arguments, try !edit <number> <new task>");
+                return new Response<(int, string)>(false, default, BotResponses.EditNotEnoughArguments);
             }
         }
 
@@ -189,7 +189,7 @@ public static class TaskHelpers
             validEditInput = false;
             if (!hasFocusedTask)
             {
-                return new Response<(int, string)>(false, default, "❌  Error: Not a valid argument, try !edit <number> <new task>");
+                return new Response<(int, string)>(false, default, BotResponses.EditInvalidArgument);
             }
         }
 
@@ -202,14 +202,91 @@ public static class TaskHelpers
     }
 }
 
+#region Response Text
+public static class BotResponses
+{
+    // Customize chat-facing text in this section when translating the bot.
+    public const string Help = "📝 Rython Task Bot Commands: !task !edit !remove !done. For mods, you can do !adel @user. More commmands here: https://github.com/liyunze-coding/rython-task-bot-v2#usage";
+    public const string EditNotEnoughArguments = "❌ Error: Not enough arguments, try !edit <number> <new task>";
+    public const string EditInvalidArgument = "❌  Error: Not a valid argument, try !edit <number> <new task>";
+    public const string TaskCannotBeEmpty = "❌ Error: Task cannot be empty";
+    public const string TaskCannotBeNumber = "❌ Error: Task cannot be a number";
+    public const string ReservedAllKeyword = "❌ Error: 'All' is a reserved keyword";
+    public const string TasksNotFound = "❌ Error 404: Tasks not found";
+    public const string TasksNotFoundShort = "❌ 404 Tasks not found";
+    public const string InvalidTaskNumber = "❌ Error: Invalid task number";
+    public const string TaskAlreadyExists = "❌ Error: Task already exists";
+    public const string CannotFocusMultipleTasks = "❌ Cannot focus on multiple tasks";
+    public const string IndexOutOfRange = "❌ Error: Index out of range.";
+    public const string CannotFocusCompletedTask = "❌ Error: Cannot focus on completed task.";
+    public const string CannotFocusCompletedTaskShort = "❌ Cannot focus on completed task.";
+    public const string NoTasksProvided = "❌ No tasks provided";
+    public const string NoTasksProvidedWithError = "❌ Error: No tasks provided";
+    public const string NoFocusedTask = "❌ You do not have a focused task.";
+    public const string NextNeedsFocusedTask = "❌ Can't use !next command, select a task to complete using !done and/or add another task";
+    public const string UserNotFound = "❌ User not found";
+    public const string InvalidInput = "❌ Error: Invalid input";
+    public const string AdminDeleteUserNotFound = "❌ Error: Unable to find user with that username on the task list";
+    public const string AdminDeleteSuccess = "All of the user's tasks have been deleted";
+    public const string Unfocused = "📝 Task have been unfocused!";
+    public const string ClearAll = "📝 All tasks have been cleared!";
+    public const string ClearMyDone = "📝 All of your completed tasks have been cleared!";
+    public const string ClearDone = "📝 All completed tasks have been cleared!";
+    public const string ClearNotStreamer = "📝 All tasks (excluding the streamer's) have been cleared!";
+    public const string AddSuccessShort = "Task List Update ♡ →  Your task(s) have been added! Good luck! 🍀";
+    public const string AddFailedShort = "❌ Failed to add your task(s)";
+    public const string AddPartialShort = "Task List Update ♡ → some tasks were successful but some failed :p";
+    public const string NoTasksToAdd = "No tasks to add";
+    public const string LogSuccessShort = "Task List Update ♡ →  Your task(s) have been logged! Good job! 🍀";
+    public const string LogFailedShort = "❌ Failed to logged your task(s)";
+    public const string LogPartialShort = "Task List Update ♡ → some tasks were logged successfully but some failed :p";
+    public const string NoTasksToLog = "No tasks to log";
+    public const string RemoveAllSuccess = "Tasklist Update 🚮 → All your tasks have been removed!";
+    public const string RemoveMultipleSuccess = "Tasklist Update 🚮 → Tasks removed successfully!";
+    public const string CompleteAllSuccess = "Task list updated! 🎉 Good job on completing all your tasks!";
+    public const string CompleteMultipleSuccess = "Task list updated! 🎉 Good job on finishing your tasks!";
+    public const string UndoneMultipleSuccess = "Task list updated 📝 — Tasks marked as incomplete";
+    public const string FocusedMarker = "(ongoing) ";
+
+    public static string TaskAlreadyExistsWithName(string taskName) => $"❌ Error: Task '{taskName}' already exists";
+    public static string AddSuccess(string addedTasks) => $"Task List Update ♡ → The task(s): \"{addedTasks}\" have been added! Good luck! 🍀";
+    public static string AddFailed(string failedTasks) => $"❌ Failed to add your task(s) {failedTasks}";
+    public static string AddPartial(string addedTasks, string failedTasks) => $"Task List Update ♡ → Task(s) added: \"{addedTasks}\" | Failed: {failedTasks}";
+    public static string LogSuccess(string loggedTasks) => $"Task List Update ♡ → The task(s) {loggedTasks} have been logged! Good job! 🍀";
+    public static string LogFailed(string failedTasks) => $"❌ Failed to logged your task(s) {failedTasks}";
+    public static string LogPartial(string loggedTasks, string failedTasks) => $"Task List Update ♡ → Task(s) logged: {loggedTasks} | Failed: {failedTasks}";
+    public static string RemoveSingleSuccess(string taskName) => $"Tasklist Update 🚮 → Task '{taskName}' has been deleted successfully!";
+    public static string RemoveFailed(string failedTasks) => $"Failed to remove: {failedTasks}";
+    public static string CompleteSingleSuccess(string taskName) => $"Task list updated! 🎉 Good job on finishing the task '{taskName}'!";
+    public static string CompleteFailed(string failedTasks) => $"❌ Failed to complete: {failedTasks}";
+    public static string UndoneSingleSuccess(string taskName) => $"Task list updated 📝 — Task {taskName} marked as incomplete!";
+    public static string UndoneFailed(string failedTasks) => $"❌ Failed to mark as incomplete: {failedTasks}";
+    public static string FocusedTask(int taskNumber, string taskName) => $"✅ Current focused task: {taskNumber}. {taskName}";
+    public static string NextSuccess(string completedTaskName, int nextTaskNumber, string nextTaskName) => $"✅ Good job on completing '{completedTaskName}'! Moving onto '({nextTaskNumber}) {nextTaskName}'";
+    public static string EditSuccess(string oldTaskName, string newTaskName) => $"📝 Task '{oldTaskName}' has been edited to '{newTaskName}'";
+    public static string PendingTaskItem(int taskNumber, string taskName, bool focused) => $"{taskNumber}. {(focused ? FocusedMarker : "")}{taskName}";
+    public static string PendingTasks(int count, string tasks) => $"Task(s) pending ({count}): {tasks}";
+    public static string OtherUserPendingTasks(string username, int count, string tasks) => $"{username}'s task(s) ({count}): {tasks}";
+    public static string CompletedTaskItem(int taskNumber, string taskName) => $"{taskNumber}. {taskName}";
+    public static string CompletedTasks(int count, string tasks) => $"Completed {count} tasks: {tasks}";
+    public static string OtherUserCompletedTasks(string username, int count, string tasks) => $"{username}'s tasks ({count}): {tasks}";
+    public static string FailedToRemoveTasks(string failedTasks) => $"❌ Failed to remove task(s): {failedTasks}";
+    public static string FailedToCompleteTasks(string failedTasks) => $"❌ Failed to complete task(s): {failedTasks}";
+    public static string FailedToUndoneTasks(string failedTasks) => $"❌ Failed to un-done task(s): {failedTasks}";
+    public static string OtherUserCount(string username, int completedCount) => $"{username} has completed {completedCount} task(s) so far!";
+    public static string MyCount(int completedCount) => $"You have completed {completedCount} task(s) so far!";
+}
+
+#endregion
+
 public static class MessageBuilder
 {
     public static string BuildAddResponseMessage(List<string> added, List<(string, string)> failed)
     {
         if (added.Count > 0 && failed.Count == 0)
         {
-            string response = $"Task List Update ♡ → The task(s): \"{String.Join("\", \"", added)}\" have been added! Good luck! 🍀";
-            return response.Length > TaskHelpers.CharacterLimit ? "Task List Update ♡ →  Your task(s) have been added! Good luck! 🍀" : response;
+            string response = BotResponses.AddSuccess(String.Join("\", \"", added));
+            return response.Length > TaskHelpers.CharacterLimit ? BotResponses.AddSuccessShort : response;
         }
 
         if (added.Count == 0 && failed.Count == 1)
@@ -219,25 +296,25 @@ public static class MessageBuilder
 
         if (added.Count == 0 && failed.Count > 1)
         {
-            string response = $"❌ Failed to add your task(s) {String.Join(", ", failed.Select(f => f.Item1))}";
-            return response.Length > TaskHelpers.CharacterLimit ? "❌ Failed to add your task(s)" : response;
+            string response = BotResponses.AddFailed(String.Join(", ", failed.Select(f => f.Item1)));
+            return response.Length > TaskHelpers.CharacterLimit ? BotResponses.AddFailedShort : response;
         }
 
         if (added.Count > 0 && failed.Count > 0)
         {
-            string response = $"Task List Update ♡ → Task(s) added: \"{String.Join("\", \"", added)}\" | Failed: {String.Join(", ", failed.Select(f => f.Item1))}";
-            return response.Length > TaskHelpers.CharacterLimit ? "Task List Update ♡ → some tasks were successful but some failed :p" : response;
+            string response = BotResponses.AddPartial(String.Join("\", \"", added), String.Join(", ", failed.Select(f => f.Item1)));
+            return response.Length > TaskHelpers.CharacterLimit ? BotResponses.AddPartialShort : response;
         }
 
-        return "No tasks to add";
+        return BotResponses.NoTasksToAdd;
     }
 
     public static string BuildLogResponseMessage(List<string> logged, List<(string, string)> failed)
     {
         if (logged.Count > 0 && failed.Count == 0)
         {
-            string response = $"Task List Update ♡ → The task(s) {String.Join(", ", logged)} have been logged! Good job! 🍀";
-            return response.Length > TaskHelpers.CharacterLimit ? "Task List Update ♡ →  Your task(s) have been logged! Good job! 🍀" : response;
+            string response = BotResponses.LogSuccess(String.Join(", ", logged));
+            return response.Length > TaskHelpers.CharacterLimit ? BotResponses.LogSuccessShort : response;
         }
 
         if (logged.Count == 0 && failed.Count == 1)
@@ -247,72 +324,72 @@ public static class MessageBuilder
 
         if (logged.Count == 0 && failed.Count > 1)
         {
-            string response = $"❌ Failed to logged your task(s) {String.Join(", ", failed.Select(f => f.Item1))}";
-            return response.Length > TaskHelpers.CharacterLimit ? "❌ Failed to logged your task(s)" : response;
+            string response = BotResponses.LogFailed(String.Join(", ", failed.Select(f => f.Item1)));
+            return response.Length > TaskHelpers.CharacterLimit ? BotResponses.LogFailedShort : response;
         }
 
         if (logged.Count > 0 && failed.Count > 0)
         {
-            string response = $"Task List Update ♡ → Task(s) logged: {String.Join(" | ", logged)} | Failed: {String.Join(", ", failed.Select(f => f.Item1))}";
-            return response.Length > TaskHelpers.CharacterLimit ? "Task List Update ♡ → some tasks were logged successfully but some failed :p" : response;
+            string response = BotResponses.LogPartial(String.Join(" | ", logged), String.Join(", ", failed.Select(f => f.Item1)));
+            return response.Length > TaskHelpers.CharacterLimit ? BotResponses.LogPartialShort : response;
         }
 
-        return "No tasks to log";
+        return BotResponses.NoTasksToLog;
     }
 
     public static string BuildRemoveMessage(List<string> tasksRemoved, List<string> tasksFailedToRemove, bool allTasks)
     {
         if (allTasks)
         {
-            return "Tasklist Update 🚮 → All your tasks have been removed!";
+            return BotResponses.RemoveAllSuccess;
         }
 
         if (tasksFailedToRemove.Count == 0 && tasksRemoved.Count == 1)
         {
-            return $"Tasklist Update 🚮 → Task '{tasksRemoved[0]}' has been deleted successfully!";
+            return BotResponses.RemoveSingleSuccess(tasksRemoved[0]);
         }
 
         if (tasksFailedToRemove.Count == 0)
         {
-            return "Tasklist Update 🚮 → Tasks removed successfully!";
+            return BotResponses.RemoveMultipleSuccess;
         }
 
-        return $"Failed to remove: {String.Join(", ", tasksFailedToRemove)}";
+        return BotResponses.RemoveFailed(String.Join(", ", tasksFailedToRemove));
     }
 
     public static string BuildCompletedMessage(List<string> tasksCompleted, List<string> tasksFailedToComplete, bool allTasks)
     {
         if (allTasks)
         {
-            return "Task list updated! 🎉 Good job on completing all your tasks!";
+            return BotResponses.CompleteAllSuccess;
         }
 
         if (tasksFailedToComplete.Count == 0 && tasksCompleted.Count == 1)
         {
-            return $"Task list updated! 🎉 Good job on finishing the task '{tasksCompleted[0]}'!";
+            return BotResponses.CompleteSingleSuccess(tasksCompleted[0]);
         }
 
         if (tasksFailedToComplete.Count == 0)
         {
-            return "Task list updated! 🎉 Good job on finishing your tasks!";
+            return BotResponses.CompleteMultipleSuccess;
         }
 
-        return $"❌ Failed to complete: {String.Join(", ", tasksFailedToComplete)}";
+        return BotResponses.CompleteFailed(String.Join(", ", tasksFailedToComplete));
     }
 
     public static string BuildUndoneMessage(List<string> tasksIncomplete, List<string> tasksFailedToComplete)
     {
         if (tasksFailedToComplete.Count == 0 && tasksIncomplete.Count == 1)
         {
-            return $"Task list updated 📝 — Task {tasksIncomplete[0]} marked as incomplete!";
+            return BotResponses.UndoneSingleSuccess(tasksIncomplete[0]);
         }
 
         if (tasksFailedToComplete.Count == 0)
         {
-            return "Task list updated 📝 — Tasks marked as incomplete";
+            return BotResponses.UndoneMultipleSuccess;
         }
 
-        return $"❌ Failed to mark as incomplete: {String.Join(", ", tasksFailedToComplete)}";
+        return BotResponses.UndoneFailed(String.Join(", ", tasksFailedToComplete));
     }
 }
 
@@ -363,11 +440,11 @@ public class TaskOperations
     {
         taskName = taskName.Trim();
         if (string.IsNullOrEmpty(taskName))
-            return new Response<(int, string)>(false, default, "❌ Error: Task cannot be empty");
+            return new Response<(int, string)>(false, default, BotResponses.TaskCannotBeEmpty);
         if (int.TryParse(taskName, out _))
-            return new Response<(int, string)>(false, default, $"❌ Error: Task cannot be a number");
+            return new Response<(int, string)>(false, default, BotResponses.TaskCannotBeNumber);
         if (taskName.Equals("all", StringComparison.OrdinalIgnoreCase))
-            return new Response<(int, string)>(false, default, $"❌ Error: 'All' is a reserved keyword");
+            return new Response<(int, string)>(false, default, BotResponses.ReservedAllKeyword);
         string key = getKey();
         if (!taskData.ContainsKey(key))
         {
@@ -376,7 +453,7 @@ public class TaskOperations
         }
 
         if (taskData[key].Tasks.Any(t => t.Name.Equals(taskName, StringComparison.OrdinalIgnoreCase) && !t.Completed))
-            return new Response<(int, string)>(false, default, $"❌ Error: Task '{taskName}' already exists");
+            return new Response<(int, string)>(false, default, BotResponses.TaskAlreadyExistsWithName(taskName));
         if (focused)
             Unfocus();
         taskData[key].Username = getUsername();
@@ -395,12 +472,12 @@ public class TaskOperations
     {
         var userTasks = ListUserTasks();
         if (userTasks.Count == 0)
-            return new Response<(string, string)>(false, default, "❌ Error 404: Tasks not found");
+            return new Response<(string, string)>(false, default, BotResponses.TasksNotFound);
         if (index >= userTasks.Count || index < 0)
-            return new Response<(string, string)>(false, default, "❌ Error: Invalid task number");
+            return new Response<(string, string)>(false, default, BotResponses.InvalidTaskNumber);
         bool taskAlreadyExists = userTasks.FindIndex(t => t.Name.Equals(newTask, StringComparison.OrdinalIgnoreCase)) > -1;
         if (taskAlreadyExists)
-            return new Response<(string, string)>(false, default, "❌ Error: Task already exists");
+            return new Response<(string, string)>(false, default, BotResponses.TaskAlreadyExists);
         string oldName = userTasks[index].Name;
         userTasks[index].Name = newTask;
         SaveIntoTasks(userTasks);
@@ -412,16 +489,16 @@ public class TaskOperations
     {
         bool containsSeparators = rawInput.IndexOfAny(TaskHelpers.Separators) >= 0;
         if (containsSeparators)
-            return new Response<(int, string)>(false, default, "❌ Cannot focus on multiple tasks");
+            return new Response<(int, string)>(false, default, BotResponses.CannotFocusMultipleTasks);
         var tasks = ListUserTasks();
         int indexByName = tasks.FindIndex(t => t.Name.Equals(rawInput, StringComparison.OrdinalIgnoreCase));
         if (int.TryParse(rawInput, out int n))
         {
             n = n - 1;
             if (n < 0 || n >= tasks.Count)
-                return new Response<(int, string)>(false, default, "❌ Error: Index out of range.");
+                return new Response<(int, string)>(false, default, BotResponses.IndexOutOfRange);
             if (tasks[n].Completed)
-                return new Response<(int, string)>(false, default, "❌ Error: Cannot focus on completed task.");
+                return new Response<(int, string)>(false, default, BotResponses.CannotFocusCompletedTask);
             UnfocusAll(tasks);
             tasks[n].Focused = true;
             SaveIntoTasks(tasks);
@@ -432,7 +509,7 @@ public class TaskOperations
         {
             n = indexByName;
             if (tasks[n].Completed)
-                return new Response<(int, string)>(false, default, "❌ Cannot focus on completed task.");
+                return new Response<(int, string)>(false, default, BotResponses.CannotFocusCompletedTaskShort);
             UnfocusAll(tasks);
             tasks[n].Focused = true;
             SaveIntoTasks(tasks);
@@ -664,7 +741,7 @@ public class CPHInline
 #region Commands
     public bool HelpCommand()
     {
-        Respond("📝 Rython Task Bot Commands: !task !edit !remove !done. For mods, you can do !adel @user. More commmands here: https://github.com/liyunze-coding/rython-task-bot-v2#usage");
+        Respond(BotResponses.Help);
         return true;
     }
 
@@ -674,7 +751,7 @@ public class CPHInline
         var taskStrings = TaskHelpers.SplitTasks(rawInput);
         if (taskStrings.Count == 0)
         {
-            Respond("❌ No tasks provided");
+            Respond(BotResponses.NoTasksProvided);
             return false;
         }
 
@@ -701,7 +778,7 @@ public class CPHInline
         var taskStrings = TaskHelpers.SplitTasks(rawInput);
         if (taskStrings.Count == 0)
         {
-            Respond("❌ Error: No tasks provided");
+            Respond(BotResponses.NoTasksProvidedWithError);
             return false;
         }
 
@@ -729,7 +806,7 @@ public class CPHInline
         if (!response.Success)
             Respond(response.ErrorMsg);
         else
-            Respond($"✅ Current focused task: {response.Data.Item1 + 1}. {response.Data.Item2}");
+            Respond(BotResponses.FocusedTask(response.Data.Item1 + 1, response.Data.Item2));
         SaveTasks();
         return true;
     }
@@ -740,11 +817,11 @@ public class CPHInline
         int focusedTaskIndex = operations.GetFocusedTask();
         if (focusedTaskIndex == -1)
         {
-            Respond("❌ You do not have a focused task.");
+            Respond(BotResponses.NoFocusedTask);
             return true;
         }
 
-        Respond($"✅ Current focused task: {focusedTaskIndex + 1}. {userTasks[focusedTaskIndex].Name}");
+        Respond(BotResponses.FocusedTask(focusedTaskIndex + 1, userTasks[focusedTaskIndex].Name));
         return true;
     }
 
@@ -754,7 +831,7 @@ public class CPHInline
         int focusedTaskIndex = operations.GetFocusedTask();
         if (focusedTaskIndex == -1)
         {
-            Respond("❌ Can't use !next command, select a task to complete using !done and/or add another task");
+            Respond(BotResponses.NextNeedsFocusedTask);
             return false;
         }
 
@@ -772,7 +849,7 @@ public class CPHInline
         Broadcast(new { mode = "done", index = focusedTaskIndex }, null);
         operations.SaveIntoTasks(userTasks);
         SaveTasks();
-        Respond($"✅ Good job on completing '{completedTaskName}'! Moving onto '({focusResponse.Data.Item1 + 1}) {focusResponse.Data.Item2}'");
+        Respond(BotResponses.NextSuccess(completedTaskName, focusResponse.Data.Item1 + 1, focusResponse.Data.Item2));
         return true;
     }
 
@@ -787,7 +864,7 @@ public class CPHInline
         }
 
         var result = operations.EditTask(editData.Data.Item1, editData.Data.Item2);
-        Respond(result.Success ? $"📝 Task '{result.Data.Item1}' has been edited to '{result.Data.Item2}'" : result.ErrorMsg);
+        Respond(result.Success ? BotResponses.EditSuccess(result.Data.Item1, result.Data.Item2) : result.ErrorMsg);
         SaveTasks();
         return true;
     }
@@ -803,7 +880,7 @@ public class CPHInline
             key = GetKey(rawInput);
             if (key == "")
             {
-                Respond("❌ User not found");
+                Respond(BotResponses.UserNotFound);
                 return false;
             }
 
@@ -813,13 +890,13 @@ public class CPHInline
         var userTasks = operations.ListUserTasks(key);
         if (userTasks.Count == 0)
         {
-            Respond("❌ 404 Tasks not found");
+            Respond(BotResponses.TasksNotFoundShort);
             return false;
         }
 
         var incompleteTasks = userTasks.Select((t, index) => new { t, index }).Where(x => !x.t.Completed);
-        string message = String.Join(" | ", incompleteTasks.Select(x => $"{x.index + 1}. {(x.t.Focused ? "(ongoing) " : "")}{x.t.Name}"));
-        message = someoneElse ? $"{GetUsername(key)}'s task(s) ({incompleteTasks.Count()}): {message}" : $"Task(s) pending ({incompleteTasks.Count()}): {message}";
+        string message = String.Join(" | ", incompleteTasks.Select(x => BotResponses.PendingTaskItem(x.index + 1, x.t.Name, x.t.Focused)));
+        message = someoneElse ? BotResponses.OtherUserPendingTasks(GetUsername(key), incompleteTasks.Count(), message) : BotResponses.PendingTasks(incompleteTasks.Count(), message);
         Respond(message);
         return true;
     }
@@ -835,7 +912,7 @@ public class CPHInline
             key = GetKey(rawInput);
             if (key == "")
             {
-                Respond("❌ User not found");
+                Respond(BotResponses.UserNotFound);
                 return false;
             }
 
@@ -845,13 +922,13 @@ public class CPHInline
         var userTasks = operations.ListUserTasks(key);
         if (userTasks.Count == 0)
         {
-            Respond("❌ 404 Tasks not found");
+            Respond(BotResponses.TasksNotFoundShort);
             return false;
         }
 
         var completedTasks = userTasks.Select((t, index) => new { t, index }).Where(x => x.t.Completed);
-        string message = String.Join(" | ", completedTasks.Select(x => $"{x.index + 1}. {x.t.Name}"));
-        message = someoneElse ? $"{GetUsername(key)}'s tasks ({completedTasks.Count()}): {message}" : $"Completed {completedTasks.Count()} tasks: {message}";
+        string message = String.Join(" | ", completedTasks.Select(x => BotResponses.CompletedTaskItem(x.index + 1, x.t.Name)));
+        message = someoneElse ? BotResponses.OtherUserCompletedTasks(GetUsername(key), completedTasks.Count(), message) : BotResponses.CompletedTasks(completedTasks.Count(), message);
         Respond(message);
         return true;
     }
@@ -875,14 +952,14 @@ public class CPHInline
         var userTasks = operations.ListUserTasks();
         if (userTasks.Count == 0)
         {
-            Respond("❌ Error 404: Tasks not found");
+            Respond(BotResponses.TasksNotFound);
             return false;
         }
 
         var tasksToBeRemoved = TaskHelpers.ParseTasksInput(rawInput, operations.GetFocusedTask);
         if (tasksToBeRemoved.Count == 0)
         {
-            Respond("❌ Error: Invalid input");
+            Respond(BotResponses.InvalidInput);
             return false;
         }
 
@@ -908,7 +985,7 @@ public class CPHInline
 
             if (taskIndices.Count == 0)
             {
-                Respond($"❌ Failed to remove task(s): {String.Join(", ", tasksFailedToRemove)}");
+                Respond(BotResponses.FailedToRemoveTasks(String.Join(", ", tasksFailedToRemove)));
                 return false;
             }
         }
@@ -940,13 +1017,13 @@ public class CPHInline
         string key = GetKey(user);
         if (key == "")
         {
-            Respond("❌ Error: Unable to find user with that username on the task list");
+            Respond(BotResponses.AdminDeleteUserNotFound);
             return false;
         }
 
         operations.RemoveUser(key);
         SaveTasks();
-        Respond("All of the user's tasks have been deleted");
+        Respond(BotResponses.AdminDeleteSuccess);
         Broadcast(new { mode = "admindelete", id = key }, null);
         return true;
     }
@@ -958,14 +1035,14 @@ public class CPHInline
         var userTasks = operations.ListUserTasks();
         if (userTasks.Count == 0)
         {
-            Respond("❌ Error 404: Tasks not found");
+            Respond(BotResponses.TasksNotFound);
             return false;
         }
 
         var tasksToBeCompleted = TaskHelpers.ParseTasksInput(rawInput, operations.GetFocusedTask);
         if (tasksToBeCompleted.Count == 0)
         {
-            Respond("❌ Error: Invalid input");
+            Respond(BotResponses.InvalidInput);
             return false;
         }
 
@@ -996,7 +1073,7 @@ public class CPHInline
 
         if (taskIndices.Count == 0)
         {
-            Respond($"❌ Failed to complete task(s): {String.Join(", ", tasksFailedToComplete)}");
+            Respond(BotResponses.FailedToCompleteTasks(String.Join(", ", tasksFailedToComplete)));
             return false;
         }
 
@@ -1018,7 +1095,7 @@ public class CPHInline
     {
         operations.Unfocus();
         SaveTasks();
-        Respond("📝 Task have been unfocused!");
+        Respond(BotResponses.Unfocused);
         Broadcast(new { mode = "unfocus" }, null);
         return true;
     }
@@ -1029,14 +1106,14 @@ public class CPHInline
         var userTasks = operations.ListUserTasks();
         if (userTasks.Count == 0)
         {
-            Respond("❌ Error 404: Tasks not found");
+            Respond(BotResponses.TasksNotFound);
             return false;
         }
 
         var tasksToBeCompleted = TaskHelpers.ParseUndoneInput(rawInput, userTasks);
         if (tasksToBeCompleted.Count == 0)
         {
-            Respond("❌ Error: Invalid input");
+            Respond(BotResponses.InvalidInput);
             return false;
         }
 
@@ -1059,7 +1136,7 @@ public class CPHInline
 
         if (taskIndices.Count == 0)
         {
-            Respond($"❌ Failed to un-done task(s): {String.Join(", ", tasksFailedToComplete)}");
+            Respond(BotResponses.FailedToUndoneTasks(String.Join(", ", tasksFailedToComplete)));
             return false;
         }
 
@@ -1082,7 +1159,7 @@ public class CPHInline
         operations.Cleanup(false);
         SaveTasks();
         Broadcast(new { mode = "clearall" }, null);
-        Respond("📝 All tasks have been cleared!");
+        Respond(BotResponses.ClearAll);
         return true;
     }
 
@@ -1093,7 +1170,7 @@ public class CPHInline
         operations.Cleanup(false);
         SaveTasks();
         Broadcast(new { mode = "clearmydone" }, null);
-        Respond("📝 All of your completed tasks have been cleared!");
+        Respond(BotResponses.ClearMyDone);
         return true;
     }
 
@@ -1103,7 +1180,7 @@ public class CPHInline
         operations.Cleanup(false);
         SaveTasks();
         Broadcast(new { mode = "cleardone" }, null);
-        Respond("📝 All completed tasks have been cleared!");
+        Respond(BotResponses.ClearDone);
         return true;
     }
 
@@ -1113,7 +1190,7 @@ public class CPHInline
         operations.Cleanup(false);
         SaveTasks();
         Broadcast(new { mode = "clearns" }, null);
-        Respond("📝 All tasks (excluding the streamer's) have been cleared!");
+        Respond(BotResponses.ClearNotStreamer);
         return true;
     }
 
@@ -1128,7 +1205,7 @@ public class CPHInline
             key = GetKey(rawInput);
             if (key == "")
             {
-                Respond("❌ User not found");
+                Respond(BotResponses.UserNotFound);
                 return false;
             }
 
@@ -1139,11 +1216,11 @@ public class CPHInline
         if (someoneElse)
         {
             string username = GetUsername(key);
-            Respond($"{username} has completed {completedCount} task(s) so far!");
+            Respond(BotResponses.OtherUserCount(username, completedCount));
         }
         else
         {
-            Respond($"You have completed {completedCount} task(s) so far!");
+            Respond(BotResponses.MyCount(completedCount));
         }
 
         return true;
