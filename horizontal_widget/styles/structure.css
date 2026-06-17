@@ -1,0 +1,74 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	width: 100vw;
+	height: 100vh;
+	min-height: 100vh;
+	overflow: hidden;
+	background: rgba(0, 0, 0, 0);
+}
+
+.task-panel {
+	overflow: hidden;
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+}
+
+.panel-header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	width: var(--header-width);
+}
+
+.scroll-viewport {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	position: relative;
+}
+
+.scroll-track {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: max-content;
+	height: 100%;
+}
+
+.scroll-content,
+.scroll-clone {
+	display: flex;
+	align-items: center;
+	flex: 0 0 auto;
+	height: 100%;
+}
+
+@keyframes infiniteScroll {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+.scroll-track.animating {
+	animation: infiniteScroll linear infinite;
+}
+
+.task {
+	display: flex;
+	align-items: center;
+	flex: 0 0 auto;
+	white-space: nowrap;
+}
