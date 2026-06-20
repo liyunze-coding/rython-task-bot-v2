@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="./lib/streamerbot-client.js"></script>
+		<script defer src="./config.js"></script>
+		<script defer src="./scripts/tasklist-view.js"></script>
+		<script defer src="./scripts/streamerbot.js"></script>
+		<script defer src="./scripts/header-animation.js"></script>
+		<link rel="stylesheet" href="./styles/style.css" />
+		<link rel="stylesheet" href="./styles/structure.css" />
+		<title>Task List</title>
+	</head>
+	<body>
+		<div class="task-panel">
+			<div class="panel-header">
+				<span id="title">!taskhelp</span>
+			</div>
+			<div class="scroll-viewport">
+				<div class="scroll-track" id="scrollTrack">
+					<div class="scroll-content" id="scrollContent">
+						<!-- Sections injected by JS -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

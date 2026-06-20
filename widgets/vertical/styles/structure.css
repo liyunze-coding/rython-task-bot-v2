@@ -1,0 +1,55 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background: rgba(0, 0, 0, 0);
+}
+
+.task-panel {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.panel-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.scroll-viewport {
+	flex: 1;
+	overflow: hidden;
+	position: relative;
+}
+
+.scroll-track {
+	display: flex;
+	flex-direction: column;
+}
+
+@keyframes infiniteScroll {
+	0% {
+		transform: translateY(0);
+	}
+	100% {
+		transform: translateY(-50%);
+	}
+}
+
+.scroll-track.animating {
+	animation: infiniteScroll linear infinite;
+}
+
+.task {
+	display: flex;
+	align-items: flex-start;
+}
