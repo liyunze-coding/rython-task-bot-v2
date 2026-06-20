@@ -3,7 +3,7 @@
 const configs = (function () {
 	const streamerBotSettings = {
 		host: "127.0.0.1",
-		port: 6968,
+		port: 8080,
 		endpoint: "/",
 	};
 
