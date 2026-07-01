@@ -316,7 +316,7 @@ class TaskList {
 			let color =
 				section.color ?? localStorage.getItem(`${section.id}-color`);
 			if (
-				configs.twitchSettings.autoUserColor &&
+				configs.userColorSettings.autoUserColor &&
 				color != undefined &&
 				color != "undefined" &&
 				color != null
@@ -351,7 +351,9 @@ class TaskList {
 				}
 				if (el.dataset.text !== task.text) {
 					el.dataset.text = task.text;
-					const textEl = el.querySelector(".task-text") || el.querySelector("span:last-child");
+					const textEl =
+						el.querySelector(".task-text") ||
+						el.querySelector("span:last-child");
 					textEl.innerHTML = this.#parseTaskText(task.text);
 				}
 				el.querySelector(".task-number").textContent = `${i + 1}.`;

@@ -25,8 +25,6 @@ const configs = (function () {
 
 	const emoteSettings = {
 		enabled: true,
-		channelName: "rythondev",
-		channelId: "248474026",
 		providers: ["7tv", "bttv", "ffz"],
 		size: "1x",
 		cacheHours: 24,
@@ -36,8 +34,7 @@ const configs = (function () {
 		username,
 		streamerBotSettings,
 		commands,
-		twitchSettings,
-		kickSettings,
+		userColorSettings,
 		emoteSettings,
 	};
 })();

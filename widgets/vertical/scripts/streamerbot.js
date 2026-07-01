@@ -135,10 +135,22 @@ async function refresh() {
 async function onConnect() {
 	taskList = new TaskList(".task-panel");
 
-	if (configs.emoteSettings.enabled && configs.emoteSettings.channelId) {
+	if (configs.emoteSettings.enabled) {
+		let broadcaster = await client.getBroadcaster();
+
+		let broadcasterName =
+			broadcaster.platforms.twitch?.broadcastUser ??
+			broadcaster.platforms.youtube?.broadcastUser ??
+			broadcaster.platforms.kick?.broadcastUser;
+
+		let broadcasterId =
+			broadcaster.platforms.twitch?.broadcastUserId ??
+			broadcaster.platforms.youtube?.broadcastUserId ??
+			broadcaster.platforms.kick?.broadcastUserId;
+
 		window.emoteManager = new EmoteManager({
-			channelName: configs.emoteSettings.channelName,
-			channelId: configs.emoteSettings.channelId,
+			channelName: broadcasterName,
+			channelId: broadcasterId,
 			providers: configs.emoteSettings.providers,
 			size: configs.emoteSettings.size,
 		});

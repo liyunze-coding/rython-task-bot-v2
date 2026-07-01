@@ -13,8 +13,8 @@ class EmoteManager {
 	#patternSize = 0;
 
 	constructor(config = {}) {
-		this.#channelName = config.channelName || "";
-		this.#channelId = config.channelId || "";
+		this.#channelName = config.channelName;
+		this.#channelId = config.channelId;
 		if (config.providers) this.#providers = config.providers;
 		if (config.size) this.#size = config.size;
 	}
