@@ -3,7 +3,7 @@
 const configs = (function () {
 	const streamerBotSettings = {
 		host: "127.0.0.1",
-		port: 8080,
+		port: 6968,
 		endpoint: "/",
 	};
 
@@ -19,12 +19,17 @@ const configs = (function () {
 		"!clearmydone",
 	];
 
-	const twitchSettings = {
+	const userColorSettings = {
 		autoUserColor: true,
 	};
 
-	const kickSettings = {
-		autouserColor: true,
+	const emoteSettings = {
+		enabled: true,
+		channelName: "rythondev",
+		channelId: "248474026",
+		providers: ["7tv", "bttv", "ffz"],
+		size: "1x",
+		cacheHours: 24,
 	};
 
 	return {
@@ -33,5 +38,6 @@ const configs = (function () {
 		commands,
 		twitchSettings,
 		kickSettings,
+		emoteSettings,
 	};
 })();

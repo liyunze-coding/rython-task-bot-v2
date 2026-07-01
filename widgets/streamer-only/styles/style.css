@@ -19,18 +19,18 @@
 	--focused-padding: 2px 4px; /* Spacing inside focused task highlight */
 
 	/* -- Font Sizes -- */
-	--title-font-size: 1.5rem; /* Size of the panel title */
-	--section-title-font-size: 1.25rem; /* Size of section headings */
-	--header-font-size: 14px; /* Size of the header text */
-	--header-subtitle-font-size: 13px; /* Size of the header subtitle */
-	--task-font-size: 1.2rem; /* Size of task text */
+	--title-font-size: 1rem; /* Size of the panel title */
+	--section-title-font-size: 1rem; /* Size of section headings */
+	--header-font-size: 1rem; /* Size of the header text */
+	--header-subtitle-font-size: 1rem; /* Size of the header subtitle */
+	--task-font-size: 1rem; /* Size of task text */
 
 	/* -- Borders & Dividers -- */
 	--header-border-color: #e0dbd5; /* Line below the header */
 	--section-border-color: white; /* Line between sections */
 
 	/* -- Spacing -- */
-	--header-padding: 16px 16px 12px; /* Spacing inside the header */
+	--header-padding: 10px 16px 5px; /* Spacing inside the header */
 	--section-padding: 10px 16px 6px; /* Spacing inside each section */
 	--task-gap: 6px; /* Gap between task items */
 	--task-padding: 3px 0; /* Spacing around each task */
@@ -104,7 +104,7 @@ body {
 }
 
 .section-title.has-user-color {
-    color: var(--user-color); /*auto user color*/
+	color: var(--user-color); /*auto user color*/
 }
 
 .task.done,
@@ -128,4 +128,15 @@ body {
 	flex-shrink: 0;
 	min-width: 16px;
 	text-align: right;
+}
+
+.emote-img {
+	height: 1.4em;
+	vertical-align: middle;
+	display: inline-block;
+	margin: -0.2em 0;
+}
+
+.task.done .emote-img {
+	opacity: 0.5;
 }

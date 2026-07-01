@@ -1,8 +1,8 @@
 # Widget - Rython Task Bot v2
 
-## Instructions
+Optional widget for [Rython Task Bot v2](https://github.com/liyunze-coding/rython-task-bot-v2)
 
-### Websocket Server
+## Instructions
 
 Websocket server running is required for browser source to work. 
 
@@ -12,14 +12,6 @@ Websocket server running is required for browser source to work.
 2. Auto Start: `ON`; Click on `Start Server`
 3. If port number already taken, change port number
 4. Ensure that [config.js](./config.js)'s websocket settings are in-sync with Streamer.Bot's 
-
-### OBS
-
-1. Add a new browser source in your scene
-2. Tick on "Local"
-3. Navigate to the index.html file
-4. Optionally customise the width and height
-5. Click on "Ok"
 
 ## Style Customisation 
 

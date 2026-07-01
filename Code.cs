@@ -464,7 +464,7 @@ public class TaskOperations
         }
 
         int newIndex = taskData[key].Tasks.Count - 1;
-        broadcast(new { mode = "add", task = taskName, completed = completed, focused = focused }, null);
+        broadcast(new { mode = "refresh", task = taskName, completed = completed, focused = focused }, null);
         return new Response<(int, string)>(true, (newIndex, taskName), null);
     }
 
@@ -481,7 +481,7 @@ public class TaskOperations
         string oldName = userTasks[index].Name;
         userTasks[index].Name = newTask;
         SaveIntoTasks(userTasks);
-        broadcast(new { mode = "edit", index = index, task = newTask }, null);
+        broadcast(new { mode = "refresh", index = index, task = newTask }, null);
         return new Response<(string, string)>(true, (oldName, newTask), null);
     }
 
@@ -502,7 +502,7 @@ public class TaskOperations
             UnfocusAll(tasks);
             tasks[n].Focused = true;
             SaveIntoTasks(tasks);
-            broadcast(new { mode = "focus", index = n }, null);
+            broadcast(new { mode = "refresh", index = n }, null);
             return new Response<(int, string)>(true, (n, tasks[n].Name), null);
         }
         else if (indexByName > -1)
@@ -513,7 +513,7 @@ public class TaskOperations
             UnfocusAll(tasks);
             tasks[n].Focused = true;
             SaveIntoTasks(tasks);
-            broadcast(new { mode = "focus", index = n }, null);
+            broadcast(new { mode = "refresh", index = n }, null);
             return new Response<(int, string)>(true, (n, tasks[n].Name), null);
         }
         else
@@ -521,7 +521,7 @@ public class TaskOperations
             var response = AddTask(rawInput, false, true);
             if (response.Success)
             {
-                broadcast(new { mode = "focus", index = response.Data.Item1 }, null);
+                broadcast(new { mode = "refresh", index = response.Data.Item1 }, null);
                 return new Response<(int, string)>(true, response.Data, null);
             }
 
@@ -846,7 +846,7 @@ public class CPHInline
         string completedTaskName = userTasks[focusedTaskIndex].Name;
         userTasks[focusedTaskIndex].Completed = true;
         userTasks[focusedTaskIndex].Focused = false;
-        Broadcast(new { mode = "done", index = focusedTaskIndex }, null);
+        Broadcast(new { mode = "refresh", index = focusedTaskIndex }, null);
         operations.SaveIntoTasks(userTasks);
         SaveTasks();
         Respond(BotResponses.NextSuccess(completedTaskName, focusResponse.Data.Item1 + 1, focusResponse.Data.Item2));
@@ -997,7 +997,7 @@ public class CPHInline
         foreach (int i in taskIndices.OrderByDescending(n => n))
         {
             userTasks.RemoveAt(i);
-            Broadcast(new { mode = "remove", index = i }, null);
+            Broadcast(new { mode = "refresh", index = i }, null);
         }
 
         operations.SaveIntoTasks(userTasks);
@@ -1024,7 +1024,7 @@ public class CPHInline
         operations.RemoveUser(key);
         SaveTasks();
         Respond(BotResponses.AdminDeleteSuccess);
-        Broadcast(new { mode = "admindelete", id = key }, null);
+        Broadcast(new { mode = "refresh", id = key }, null);
         return true;
     }
 
@@ -1081,7 +1081,7 @@ public class CPHInline
         {
             userTasks[i].Completed = true;
             userTasks[i].Focused = false;
-            Broadcast(new { mode = "done", index = i }, null);
+            Broadcast(new { mode = "refresh", index = i }, null);
         }
 
         IncrementDoneCount(taskIndices.Count);
@@ -1096,7 +1096,7 @@ public class CPHInline
         operations.Unfocus();
         SaveTasks();
         Respond(BotResponses.Unfocused);
-        Broadcast(new { mode = "unfocus" }, null);
+        Broadcast(new { mode = "refresh" }, null);
         return true;
     }
 
@@ -1144,7 +1144,7 @@ public class CPHInline
         {
             userTasks[i].Completed = false;
             userTasks[i].Focused = false;
-            Broadcast(new { mode = "undone", index = i }, null);
+            Broadcast(new { mode = "refresh", index = i }, null);
         }
 
         operations.SaveIntoTasks(userTasks);
@@ -1169,7 +1169,7 @@ public class CPHInline
         operations.ClearUserCompletedTasks(key);
         operations.Cleanup(false);
         SaveTasks();
-        Broadcast(new { mode = "clearmydone" }, null);
+        Broadcast(new { mode = "refresh" }, null);
         Respond(BotResponses.ClearMyDone);
         return true;
     }
@@ -1179,7 +1179,7 @@ public class CPHInline
         operations.ClearCompletedTasks();
         operations.Cleanup(false);
         SaveTasks();
-        Broadcast(new { mode = "cleardone" }, null);
+        Broadcast(new { mode = "refresh" }, null);
         Respond(BotResponses.ClearDone);
         return true;
     }
@@ -1189,7 +1189,7 @@ public class CPHInline
         operations.FilterToStreamers(GetStreamerUsernames());
         operations.Cleanup(false);
         SaveTasks();
-        Broadcast(new { mode = "clearns" }, null);
+        Broadcast(new { mode = "refresh" }, null);
         Respond(BotResponses.ClearNotStreamer);
         return true;
     }

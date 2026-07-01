@@ -279,6 +279,13 @@ class TaskList {
 
 	// ── dom helpers ────────────────────────────────────
 
+	#parseTaskText(text) {
+		if (window.emoteManager && window.emoteManager.loaded) {
+			return window.emoteManager.parseText(text);
+		}
+		return text;
+	}
+
 	#createTaskEl(task, index) {
 		const div = document.createElement("div");
 		div.className =
@@ -291,7 +298,8 @@ class TaskList {
 		numberSpan.textContent = `${index + 1}.`;
 
 		const textSpan = document.createElement("span");
-		textSpan.textContent = task.text;
+		textSpan.className = "task-text";
+		textSpan.innerHTML = this.#parseTaskText(task.text);
 
 		div.replaceChildren(numberSpan, textSpan);
 		return div;
@@ -343,7 +351,8 @@ class TaskList {
 				}
 				if (el.dataset.text !== task.text) {
 					el.dataset.text = task.text;
-					el.querySelector("span:last-child").textContent = task.text;
+					const textEl = el.querySelector(".task-text") || el.querySelector("span:last-child");
+					textEl.innerHTML = this.#parseTaskText(task.text);
 				}
 				el.querySelector(".task-number").textContent = `${i + 1}.`;
 

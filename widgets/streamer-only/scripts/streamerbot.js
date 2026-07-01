@@ -21,8 +21,9 @@ function getAllLocalstorage() {
 }
 
 client.on("General.Custom", (data) => onCustom(data));
-if (configs.twitchSettings.autoUserColor) {
-	client.on("Twitch.ChatMessage", (data) => onTwitchFirstWord(data));
+if (configs.userColorSettings.autoUserColor) {
+	client.on("Twitch.ChatMessage", (data) => onChatMessage(data));
+	client.on("Kick.ChatMessage", (data) => onChatMessage(data));
 }
 
 let taskList;
@@ -57,7 +58,7 @@ function relativeLuminance({ r, g, b }) {
 	return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }
 
-async function onTwitchFirstWord(data) {
+async function onChatMessage(data) {
 	let userColor = data.data.user.color; // hex colour
 
 	if (userColor != undefined || userColor != "undefined") {
@@ -134,6 +135,22 @@ async function refresh() {
 // LOAD TASK LIST
 async function onConnect() {
 	taskList = new TaskList(".task-panel");
+
+	if (configs.emoteSettings.enabled && configs.emoteSettings.channelId) {
+		window.emoteManager = new EmoteManager({
+			channelName: configs.emoteSettings.channelName,
+			channelId: configs.emoteSettings.channelId,
+			providers: configs.emoteSettings.providers,
+			size: configs.emoteSettings.size,
+		});
+
+		window.emoteManager.init().then(() => {
+			if (taskList) {
+				taskList.load(taskList.getData());
+			}
+		});
+	}
+
 	refresh();
 }
 
@@ -161,62 +178,8 @@ function onCustom(payload) {
 	const username = data.username;
 
 	switch (body.mode) {
-		case "add":
-			// body.task;
-			let taskPayload = {
-				text: body.task,
-				done: body.completed,
-				focused: body.focused,
-			};
-
-			let usernameColor =
-				userColors[id] ?? localStorage.getItem(`${id}-color`);
-
-			if (
-				configs.twitchSettings.autoUserColor &&
-				usernameColor != undefined &&
-				usernameColor != null
-			) {
-				taskPayload["color"] = usernameColor;
-			}
-
-			taskList.addTask(id, taskPayload, username);
-			break;
-		case "focus":
-			taskList.focusTask(id, body.index, usernameColor);
-			break;
-		case "edit":
-			taskList.editTask(id, body.index, body.task, usernameColor);
-			break;
-		case "remove":
-			taskList.removeTask(id, body.index, usernameColor);
-			break;
-		case "done":
-			taskList.doneTask(id, body.index, usernameColor);
-			break;
-		case "admindelete":
-			taskList.removeSection(body.id);
-			break;
-		case "clearns":
+		case "refresh":
 			refresh();
-			break;
-		case "cleardone":
-			taskList.cleardone();
-			break;
-		case "clearmydone":
-			taskList.clearmydone(id);
-			break;
-		case "clearall":
-			refresh();
-			break;
-		case "undone":
-			taskList.undoneTask(id, body.index);
-			break;
-		case "unfocus":
-			taskList.unfocusTask(id);
-			break;
-		case "admindelete":
-			taskList.removeSection(body.id);
 			break;
 		default:
 			break;
