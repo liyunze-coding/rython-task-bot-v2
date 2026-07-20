@@ -6,7 +6,7 @@
 
 Websocket server running is required for browser source to work. 
 
-> ![websocket](./images/websocket.png)
+> ![websocket](../shared/images/websocket.png)
 
 1. Streamer.Bot -> Servers/Clients -> Websocket Server
 2. Auto Start: `ON`; Click on `Start Server`

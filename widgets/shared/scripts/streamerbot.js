@@ -9,17 +9,6 @@ const client = new StreamerbotClient({
 	onError: onError,
 });
 
-function getAllLocalstorage() {
-	const allLocalStorage = {};
-
-	for (let i = 0; i < localStorage.length; i++) {
-		const key = localStorage.key(i);
-		allLocalStorage[key] = localStorage.getItem(key);
-	}
-
-	return JSON.stringify(allLocalStorage);
-}
-
 client.on("General.Custom", (data) => onCustom(data));
 if (configs.userColorSettings.autoUserColor) {
 	client.on("Twitch.ChatMessage", (data) => onChatMessage(data));
@@ -29,49 +18,35 @@ if (configs.userColorSettings.autoUserColor) {
 let taskList;
 let userColors = {};
 
-function parseHexColor(hex) {
-	if (typeof hex !== "string") return null;
-	const s = hex.trim();
-	const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(s);
-	if (!m) return null;
-	let h = m[1].toLowerCase();
-	if (h.length === 3) {
-		h = h
-			.split("")
-			.map((c) => c + c)
-			.join("");
-	}
-	const r = parseInt(h.slice(0, 2), 16);
-	const g = parseInt(h.slice(2, 4), 16);
-	const b = parseInt(h.slice(4, 6), 16);
-	return { r, g, b };
+function getUserColor(sectionId) {
+	return (
+		userColors[`${sectionId}-color`] ??
+		localStorage.getItem(`${sectionId}-color`)
+	);
 }
 
-function relativeLuminance({ r, g, b }) {
-	const toLinear = (v) => {
-		const s = v / 255;
-		return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
-	};
-	const R = toLinear(r);
-	const G = toLinear(g);
-	const B = toLinear(b);
-	return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+function taskColorFromSettings(sectionId) {
+	const usernameColor = getUserColor(sectionId);
+	if (
+		configs.userColorSettings.autoUserColor &&
+		usernameColor != undefined &&
+		usernameColor != null
+	) {
+		return usernameColor;
+	}
+	return undefined;
 }
 
 async function onChatMessage(data) {
-	let userColor = data.data.user.color; // hex colour #FF69B4
+	const userColor = data.data.user.color;
 
-	if (userColor != undefined || userColor != "undefined") {
-		// update localstorage
-		// get id: platform-userID
-		let userId = data.data.user.id;
-		let key = `twitch-${userId}`;
+	if (userColor != undefined && userColor != "undefined") {
+		const userId = data.data.user.id;
+		const key = `twitch-${userId}`;
 
 		localStorage.setItem(`${key}-color`, userColor);
 		userColors[`${key}-color`] = userColor;
 	}
-
-	return;
 }
 
 function onDisconnect() {
@@ -85,7 +60,6 @@ function onError(err) {
 }
 
 function showConnectionError(message) {
-	// Remove existing popup if any
 	const existing = document.getElementById("connection-error");
 	if (existing) existing.remove();
 
@@ -110,7 +84,6 @@ function showConnectionError(message) {
 	});
 	document.body.appendChild(popup);
 
-	// Auto-dismiss after 5 seconds
 	setTimeout(() => {
 		popup.animate([{ opacity: 1 }, { opacity: 0 }], {
 			duration: 300,
@@ -121,7 +94,6 @@ function showConnectionError(message) {
 
 async function refresh() {
 	const response = await client.getGlobal("rython-task-bot", true);
-	console.log(response);
 
 	if (response.status !== "ok" || !response.variable?.value) return;
 
@@ -131,21 +103,18 @@ async function refresh() {
 	taskList.load(sections);
 }
 
-// LOAD TASK LIST
 async function onConnect() {
 	taskList = new TaskList(".task-panel");
 
 	if (configs.emoteSettings.enabled) {
-		let broadcaster = await client.getBroadcaster();
+		const broadcaster = await client.getBroadcaster();
 
-		console.log(broadcaster);
-
-		let broadcasterName =
+		const broadcasterName =
 			broadcaster.platforms.twitch?.broadcastUser ??
 			broadcaster.platforms.youtube?.broadcastUser ??
 			broadcaster.platforms.kick?.broadcastUser;
 
-		let broadcasterId =
+		const broadcasterId =
 			broadcaster.platforms.twitch?.broadcastUserId ??
 			broadcaster.platforms.youtube?.broadcastUserId ??
 			broadcaster.platforms.kick?.broadcastUserId;
@@ -179,19 +148,58 @@ function transformToSections(users) {
 	}));
 }
 
-// Update task list action by action
 function onCustom(payload) {
 	const data = payload.data;
-	if (!data.source && data.source != "rython-task-bot") {
+	if (data.source !== "rython-task-bot") {
 		return;
 	}
 	if (!taskList) return;
+
 	const body = data.body;
 	const id = data.id;
 	const username = data.username;
 
 	switch (body.mode) {
-		case "refresh":
+		case "add": {
+			const taskPayload = {
+				text: body.task,
+				done: body.completed,
+				focused: body.focused,
+			};
+			const color = taskColorFromSettings(id);
+			if (color) taskPayload.color = color;
+			taskList.addTask(id, taskPayload, username);
+			break;
+		}
+		case "focus":
+			taskList.focusTask(id, body.index);
+			break;
+		case "edit":
+			taskList.editTask(id, body.index, body.task, taskColorFromSettings(id));
+			break;
+		case "remove":
+			taskList.removeTask(id, body.index);
+			break;
+		case "done":
+			taskList.doneTask(id, body.index);
+			break;
+		case "undone":
+			taskList.undoneTask(id, body.index);
+			break;
+		case "unfocus":
+			taskList.unfocusTask(id);
+			break;
+		case "admindelete":
+			taskList.removeSection(body.id);
+			break;
+		case "clearmydone":
+			taskList.clearmydone(id);
+			break;
+		case "cleardone":
+			taskList.cleardone();
+			break;
+		case "clearall":
+		case "clearns":
 			refresh();
 			break;
 		default:

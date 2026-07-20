@@ -6,7 +6,7 @@ Optional widget for [Rython Task Bot v2](https://github.com/liyunze-coding/rytho
 
 Websocket server running is required for browser source to work. 
 
-> ![websocket](./images/websocket.png)
+> ![websocket](../shared/images/websocket.png)
 
 1. Streamer.Bot -> Servers/Clients -> Websocket Server
 2. Auto Start: `ON`; Click on `Start Server`
