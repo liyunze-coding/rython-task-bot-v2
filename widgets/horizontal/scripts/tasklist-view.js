@@ -7,9 +7,9 @@ class TaskList {
 
 	#scroll = {
 		offset: 0,
-		contentH: 0,
-		viewportH: 0,
-		speed: 50,
+		contentW: 0,
+		viewportW: 0,
+		speed: 35,
 		raf: null,
 		lastT: 0,
 		active: false,
@@ -228,22 +228,22 @@ class TaskList {
 	#animateIn(el) {
 		el.style.overflow = "hidden";
 
-		const h = el.scrollHeight;
-		el.style.height = "0px";
+		const w = el.scrollWidth;
+		el.style.width = "0px";
 		el.style.opacity = "0";
 
 		requestAnimationFrame(() => {
 			const anim = el.animate(
 				[
 					{
-						height: "0px",
+						width: "0px",
 						opacity: 0,
-						transform: "translateX(-8px)",
+						transform: "translateY(-8px)",
 					},
 					{
-						height: h + "px",
+						width: w + "px",
 						opacity: 1,
-						transform: "translateX(0)",
+						transform: "translateY(0)",
 					},
 				],
 				{
@@ -254,7 +254,7 @@ class TaskList {
 			);
 
 			anim.onfinish = () => {
-				el.style.height = "";
+				el.style.width = "";
 				el.style.opacity = "";
 				el.style.overflow = "";
 				el.style.transform = "";
@@ -299,6 +299,7 @@ class TaskList {
 			{ duration: 250, easing: "ease-out" },
 		);
 	}
+
 
 	// ── dom helpers ────────────────────────────────────
 
@@ -449,11 +450,11 @@ class TaskList {
 		s.lastT = now;
 
 		if (dt < 0.2) {
-			s.contentH = this.#els.content.scrollHeight;
+			s.contentW = this.#els.content.scrollWidth;
 			s.offset += s.speed * dt;
 
-			if (s.contentH > 0 && s.offset >= s.contentH) {
-				s.offset -= s.contentH;
+			if (s.contentW > 0 && s.offset >= s.contentW) {
+				s.offset -= s.contentW;
 
 				if (s.wantStop) {
 					s.wantStop = false;
@@ -462,7 +463,7 @@ class TaskList {
 				}
 			}
 
-			this.#els.track.style.transform = `translateY(${-s.offset}px)`;
+			this.#els.track.style.transform = `translateX(${-s.offset}px)`;
 		}
 
 		s.raf = requestAnimationFrame(this.#tick);
@@ -497,9 +498,9 @@ class TaskList {
 
 	#syncScroll() {
 		const s = this.#scroll;
-		s.contentH = this.#els.content.scrollHeight;
-		s.viewportH = this.#els.viewport.clientHeight;
-		const needs = s.contentH > s.viewportH;
+		s.contentW = this.#els.content.scrollWidth;
+		s.viewportW = this.#els.viewport.clientWidth;
+		const needs = s.contentW > s.viewportW;
 
 		let clone = this.#els.track.querySelector(".scroll-clone");
 
@@ -512,8 +513,8 @@ class TaskList {
 			} else {
 				this.#patchContainer(clone, this.#data, false);
 			}
-			if (s.offset >= s.contentH) {
-				s.offset %= s.contentH;
+			if (s.offset >= s.contentW) {
+				s.offset %= s.contentW;
 			}
 			this.#startScroll();
 		} else {
