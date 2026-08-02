@@ -233,6 +233,7 @@ public static class BotResponses
     public const string ClearMyDone = "📝 All of your completed tasks have been cleared!";
     public const string ClearDone = "📝 All completed tasks have been cleared!";
     public const string ClearNotStreamer = "📝 All tasks (excluding the streamer's) have been cleared!";
+    public const string InvalidDaysArgument = "❌ Error: Please provide a valid number of days, e.g. !clearold 7";
     public const string AddSuccessShort = "Task List Update ♡ →  Your task(s) have been added! Good luck! 🍀";
     public const string AddFailedShort = "❌ Failed to add your task(s)";
     public const string AddPartialShort = "Task List Update ♡ → some tasks were successful but some failed :p";
@@ -275,6 +276,8 @@ public static class BotResponses
     public static string FailedToUndoneTasks(string failedTasks) => $"❌ Failed to un-done task(s): {failedTasks}";
     public static string OtherUserCount(string username, int completedCount) => $"{username} has completed {completedCount} task(s) so far!";
     public static string MyCount(int completedCount) => $"You have completed {completedCount} task(s) so far!";
+    public static string ClearOld(int count, int days) => $"📝 Cleared {count} task(s) that were {days} day(s) or older!";
+    public static string CountOld(int count, int days) => $"📝 There are {count} task(s) that are {days} day(s) or older.";
 }
 
 #endregion
@@ -589,6 +592,25 @@ public class TaskOperations
     public void ClearUserCompletedTasks(string key)
     {
         taskData[key].Tasks = taskData[key].Tasks.Where(t => !t.Completed).ToList();
+    }
+
+    public int CountOldTasks(int days)
+    {
+        DateTime cutoff = DateTime.Now.AddDays(-days);
+        return taskData.Values.Sum(user => user.Tasks.Count(t => t.AddedTime <= cutoff));
+    }
+
+    public int ClearOldTasks(int days)
+    {
+        DateTime cutoff = DateTime.Now.AddDays(-days);
+        int removed = 0;
+        foreach (var key in taskData.Keys.ToList())
+        {
+            int before = taskData[key].Tasks.Count;
+            taskData[key].Tasks = taskData[key].Tasks.Where(t => t.AddedTime > cutoff).ToList();
+            removed += before - taskData[key].Tasks.Count;
+        }
+        return removed;
     }
 
     public void FilterToStreamers(List<string> streamerUsernames)
@@ -1200,6 +1222,41 @@ public class CPHInline
         SaveTasks();
         Broadcast(new { mode = "clearns" }, null);
         Respond(BotResponses.ClearNotStreamer);
+        return true;
+    }
+
+    private bool TryParseDaysArgument(out int days)
+    {
+        days = 0;
+        CPH.TryGetArg("rawInput", out string rawInput);
+        if (string.IsNullOrWhiteSpace(rawInput) || !int.TryParse(rawInput.Trim(), out days) || days < 1)
+        {
+            Respond(BotResponses.InvalidDaysArgument);
+            return false;
+        }
+        return true;
+    }
+
+    public bool ClearOldCommand()
+    {
+        if (!TryParseDaysArgument(out int days))
+            return false;
+
+        int removed = operations.ClearOldTasks(days);
+        operations.Cleanup(false);
+        SaveTasks();
+        Broadcast(new { mode = "clearold" }, null);
+        Respond(BotResponses.ClearOld(removed, days));
+        return true;
+    }
+
+    public bool CountOldCommand()
+    {
+        if (!TryParseDaysArgument(out int days))
+            return false;
+
+        int count = operations.CountOldTasks(days);
+        Respond(BotResponses.CountOld(count, days));
         return true;
     }
 

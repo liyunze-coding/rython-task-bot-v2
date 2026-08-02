@@ -70,6 +70,8 @@ Widget can be found in the [widget folder](/widget).
 
 -   `!clearall` - Clear all tasks
 -   `!cleardone` - Clear all completed tasks
+-   `!clearold [days]` - Clear tasks that are at least `[days]` days old (e.g. `!clearold 7`)
+-   `!countold [days]` - Count tasks that are at least `[days]` days old (e.g. `!countold 7`)
 -   `!adel @user` - Remove all tasks from a user
 
 ## Credits

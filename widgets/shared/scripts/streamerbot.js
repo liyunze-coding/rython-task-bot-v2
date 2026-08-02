@@ -200,6 +200,7 @@ function onCustom(payload) {
 			break;
 		case "clearall":
 		case "clearns":
+		case "clearold":
 			refresh();
 			break;
 		default:
