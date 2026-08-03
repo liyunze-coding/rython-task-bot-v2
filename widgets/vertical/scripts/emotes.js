@@ -57,18 +57,54 @@ class EmoteManager {
 		this.#patternSize = this.#emotes.size;
 	}
 
-	parseText(text) {
-		if (!text || !this.#loaded || this.#emotes.size === 0) return text;
+	renderInto(container, text) {
+		container.replaceChildren();
+		if (text == null || text === "") return;
+
+		if (!this.#loaded || this.#emotes.size === 0) {
+			container.textContent = text;
+			return;
+		}
 
 		this.#buildPattern();
-		if (!this.#pattern) return text;
+		if (!this.#pattern) {
+			container.textContent = text;
+			return;
+		}
 
-		return text.replace(this.#pattern, (match) => {
-			const emote = this.#emotes.get(match);
-			if (!emote) return match;
-			console.log(emote);
-			return `<img src="${emote.url}" alt="${match}" title="${match} (${emote.provider})" class="emote-img" />`;
-		});
+		const pattern = new RegExp(this.#pattern.source, this.#pattern.flags);
+		const nodes = [];
+		let lastIndex = 0;
+		let match;
+
+		while ((match = pattern.exec(text)) !== null) {
+			if (match.index > lastIndex) {
+				nodes.push(
+					document.createTextNode(text.slice(lastIndex, match.index)),
+				);
+			}
+
+			const name = match[0];
+			const emote = this.#emotes.get(name);
+			if (emote?.url && /^https?:\/\//i.test(emote.url)) {
+				const img = document.createElement("img");
+				img.src = emote.url;
+				img.alt = name;
+				img.title = `${name} (${emote.provider})`;
+				img.className = "emote-img";
+				nodes.push(img);
+			} else {
+				nodes.push(document.createTextNode(name));
+			}
+
+			lastIndex = match.index + name.length;
+		}
+
+		if (lastIndex < text.length) {
+			nodes.push(document.createTextNode(text.slice(lastIndex)));
+		}
+
+		container.replaceChildren(...nodes);
 	}
 
 	async init() {
