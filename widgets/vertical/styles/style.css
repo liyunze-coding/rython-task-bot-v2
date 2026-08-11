@@ -9,7 +9,9 @@
 	--panel-border-radius: 12px; /* Roundness of panel corners */
 
 	/* -- Text Colors -- */
-	--text-color: #fafafa; /* Main text color */
+	--header-name-color: #fafafa; /* Header name color */
+	--username-color: #fafafa; /* Username color when automatic user colors are disabled */
+	--task-name-color: #fafafa; /* Task name color */
 	--done-task-color: #aaa; /* Color of completed tasks */
 	--focused-text-color: #141414; /* Text color when a task is focused */
 
@@ -68,13 +70,13 @@ body {
 	padding: var(--header-padding);
 	font-weight: 700;
 	font-size: var(--header-font-size);
-	color: var(--text-color);
+	color: var(--header-name-color);
 	background: var(--panel-header-background);
 }
 
 .panel-header span:last-child {
 	font-weight: 600;
-	color: var(--text-color);
+	color: var(--header-name-color);
 	font-size: var(--header-subtitle-font-size);
 }
 
@@ -90,7 +92,7 @@ body {
 .section-title {
 	font-weight: 700;
 	font-size: var(--section-title-font-size);
-	color: var(--text-color);
+	color: var(--username-color);
 	margin-bottom: 4px;
 }
 
@@ -98,7 +100,7 @@ body {
 	gap: var(--task-gap);
 	padding: var(--task-padding);
 	font-size: var(--task-font-size);
-	color: var(--text-color);
+	color: var(--task-name-color);
 	line-height: 1.4;
 	width: fit-content;
 }
