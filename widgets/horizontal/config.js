@@ -1,6 +1,6 @@
 "use strict";
 
-export const configs = (function () {
+const configs = (function () {
 	const streamerBotSettings = {
 		host: "127.0.0.1",
 		port: 8080,
