@@ -46,6 +46,7 @@ async function onChatMessage(data) {
 
 		localStorage.setItem(`${key}-color`, userColor);
 		userColors[`${key}-color`] = userColor;
+		taskList?.updateUserColor(key, userColor);
 	}
 }
 
