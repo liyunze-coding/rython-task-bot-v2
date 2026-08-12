@@ -95,6 +95,23 @@ class TaskList {
 		return this;
 	}
 
+	updateUserColor(sectionId, color) {
+		const section = this.#data.find((s) => s.id === sectionId);
+		if (!section) return this;
+
+		section.color = color;
+		document
+			.querySelectorAll(".section")
+			.forEach((el) => {
+				if (el.dataset.key !== sectionId) return;
+				const title = el.querySelector(":scope > .section-title");
+				if (!title) return;
+				title.style.setProperty("--user-color", color);
+				title.classList.add("has-user-color");
+			});
+		return this;
+	}
+
 	addTask(sectionId, task, sectionTitle) {
 		if (!this.#data.find((s) => s.id === sectionId)) {
 			this.addSection({
