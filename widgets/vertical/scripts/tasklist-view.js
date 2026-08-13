@@ -528,9 +528,13 @@ class TaskList {
 
 		if (needs) {
 			if (!clone) {
-				clone = this.#els.content.cloneNode(true);
+				// Build the loop copy from data. Deep-cloning the live content also
+				// copies temporary height/opacity styles from enter animations,
+				// leaving the copy collapsed and causing a visible jump at the seam.
+				clone = this.#els.content.cloneNode(false);
 				clone.id = "";
 				clone.classList.add("scroll-clone");
+				this.#patchContainer(clone, this.#data, false);
 				this.#els.track.appendChild(clone);
 			} else {
 				this.#patchContainer(clone, this.#data, false);

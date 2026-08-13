@@ -39,10 +39,11 @@ function taskColorFromSettings(sectionId) {
 
 async function onChatMessage(data) {
 	const userColor = data.data.user.color;
+	const userType = data.data.user.type;
 
 	if (userColor != undefined && userColor != "undefined") {
 		const userId = data.data.user.id;
-		const key = `twitch-${userId}`;
+		const key = `${userType}-${userId}`;
 
 		localStorage.setItem(`${key}-color`, userColor);
 		userColors[`${key}-color`] = userColor;
@@ -176,7 +177,12 @@ function onCustom(payload) {
 			taskList.focusTask(id, body.index);
 			break;
 		case "edit":
-			taskList.editTask(id, body.index, body.task, taskColorFromSettings(id));
+			taskList.editTask(
+				id,
+				body.index,
+				body.task,
+				taskColorFromSettings(id),
+			);
 			break;
 		case "remove":
 			taskList.removeTask(id, body.index);
