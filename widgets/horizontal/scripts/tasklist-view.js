@@ -62,6 +62,7 @@ class TaskList {
 			track: el.querySelector(".scroll-track"),
 			content: el.querySelector(".scroll-content"),
 			viewport: el.querySelector(".scroll-viewport"),
+			count: el.querySelector("#task-count"),
 		};
 	}
 
@@ -100,15 +101,13 @@ class TaskList {
 		if (!section) return this;
 
 		section.color = color;
-		document
-			.querySelectorAll(".section")
-			.forEach((el) => {
-				if (el.dataset.key !== sectionId) return;
-				const title = el.querySelector(":scope > .section-title");
-				if (!title) return;
-				title.style.setProperty("--user-color", color);
-				title.classList.add("has-user-color");
-			});
+		document.querySelectorAll(".section").forEach((el) => {
+			if (el.dataset.key !== sectionId) return;
+			const title = el.querySelector(":scope > .section-title");
+			if (!title) return;
+			title.style.setProperty("--user-color", color);
+			title.classList.add("has-user-color");
+		});
 		return this;
 	}
 
@@ -221,6 +220,7 @@ class TaskList {
 		this.#els.content.innerHTML = "";
 		this.#data = [];
 		this.#firstRender = true;
+		this.#updateTaskCount();
 	}
 
 	// ── render ─────────────────────────────────────────
@@ -235,9 +235,16 @@ class TaskList {
 			this.#patchContainer(this.#els.content, this.#data, true);
 		}
 
+		this.#updateTaskCount();
+
 		if (this.#pendingRemovals === 0) {
 			this.#syncScroll();
 		}
+	}
+
+	#updateTaskCount() {
+		if (!this.#els.count) return;
+		this.#els.count.textContent = `${this.doneCount}/${this.taskCount}`;
 	}
 
 	// ── animations ─────────────────────────────────────
@@ -316,7 +323,6 @@ class TaskList {
 			{ duration: 250, easing: "ease-out" },
 		);
 	}
-
 
 	// ── dom helpers ────────────────────────────────────
 

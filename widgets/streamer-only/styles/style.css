@@ -126,6 +126,12 @@ body {
 	font-size: var(--title-font-size);
 }
 
+#task-count {
+	flex-shrink: 0;
+	white-space: nowrap;
+	font-size: var(--title-font-size);
+}
+
 .task-number {
 	flex-shrink: 0;
 	min-width: 16px;

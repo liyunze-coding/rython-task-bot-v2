@@ -106,7 +106,7 @@ body {
 }
 
 .section-title.has-user-color {
-    color: var(--user-color); /*auto user color*/
+	color: var(--user-color); /*auto user color*/
 }
 
 .task.done,
@@ -123,6 +123,12 @@ body {
 }
 
 #title {
+	font-size: var(--title-font-size);
+}
+
+#task-count {
+	flex-shrink: 0;
+	white-space: nowrap;
 	font-size: var(--title-font-size);
 }
 
