@@ -1,13 +1,20 @@
 // STREAMER.BOT SETTINGS
 
-const client = new StreamerbotClient({
-	host: configs.streamerBotSettings.host,
-	port: configs.streamerBotSettings.port,
-	endpoint: configs.streamerBotSettings.endpoint,
-	onConnect: onConnect,
-	onDisconnect: onDisconnect,
-	onError: onError,
-});
+let client;
+
+try {
+    client = new StreamerbotClient({
+        host: configs.streamerBotSettings.host,
+        port: configs.streamerBotSettings.port,
+        endpoint: configs.streamerBotSettings.endpoint,
+        password: configs.streamerBotSettings.password ?? "",
+        onConnect,
+        onDisconnect,
+        onError,
+    });
+} catch (err) {
+    onError(err);
+}
 
 client.on("General.Custom", (data) => onCustom(data));
 if (configs.userColorSettings.autoUserColor) {
@@ -56,9 +63,11 @@ function onDisconnect() {
 }
 
 function onError(err) {
-	showConnectionError(
-		"Connection Failed: " + (err?.message || "Unknown error"),
-	);
+    console.error("Streamer.bot connection error:", err);
+
+    showConnectionError(
+        "Connection Failed: " + (err?.message || "Unknown error"),
+    );
 }
 
 function showConnectionError(message) {
