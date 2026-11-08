@@ -15,14 +15,14 @@ body {
 	background: rgba(0, 0, 0, 0);
 }
 
-.task-panel {
+.task-list {
 	overflow: hidden;
 	display: flex;
 	flex-direction: row;
 	align-items: stretch;
 }
 
-.panel-header {
+.task-list-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;

@@ -12,13 +12,13 @@ body {
 	background: rgba(0, 0, 0, 0);
 }
 
-.task-panel {
+.task-list {
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 }
 
-.panel-header {
+.task-list-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;

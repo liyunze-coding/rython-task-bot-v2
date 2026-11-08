@@ -115,7 +115,7 @@ async function refresh() {
 }
 
 async function onConnect() {
-	taskList = new TaskList(".task-panel");
+	taskList = new TaskList(".task-list");
 
 	if (configs.emoteSettings.enabled) {
 		const broadcaster = await client.getBroadcaster();

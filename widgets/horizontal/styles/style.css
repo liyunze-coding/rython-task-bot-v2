@@ -4,7 +4,7 @@
    ======================================== */
 :root {
 	/* -- Background & Panel -- */
-	--panel-header-background: #141414; /* Header background color */
+	--task-list-header-background: #141414; /* Header background color */
 	--panel-background: #141414c0; /* Body background color */
 	--panel-border-radius: 8px; /* Roundness of panel corners */
 	--widget-height: 50px; /* Height of the full-width horizontal bar */
@@ -62,24 +62,24 @@ body {
 	background: rgba(0, 0, 0, 0);
 }
 
-.task-panel {
+.task-list {
 	width: 100vw;
 	height: min(var(--widget-height), 100vh);
 	background: var(--panel-background);
 	border-radius: var(--panel-border-radius);
 }
 
-.panel-header {
+.task-list-header {
 	padding: var(--header-padding);
 	font-weight: 700;
 	font-size: var(--header-font-size);
 	color: var(--header-name-color);
-	background: var(--panel-header-background);
+	background: var(--task-list-header-background);
 	height: 100%;
 	white-space: nowrap;
 }
 
-.panel-header span:last-child {
+.task-list-header span:last-child {
 	font-weight: 600;
 	color: var(--header-name-color);
 	font-size: var(--header-subtitle-font-size);

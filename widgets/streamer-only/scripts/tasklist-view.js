@@ -540,7 +540,7 @@ class TaskList {
 
 // ── usage ──────────────────────────────────────────────
 
-// const list2 = new TaskList(".task-panel");
+// const list2 = new TaskList(".task-list");
 
 // list2.load([
 // 	{
