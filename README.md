@@ -30,7 +30,8 @@ Widget can be found in the [widget folder](/widget).
 ## Setup Instructions
 
 1. Install and setup [Streamer.Bot](https://streamer.bot/)
-   - [Nutty's Reference Video](https://youtu.be/gfGy1gRH5ik?t=146) 
+   - [Nutty's StreamerBot Setup Video](https://youtu.be/gfGy1gRH5ik?t=146) 
+   - [RythonDev's TaskBot Setup video](https://youtu.be/oaCBTBqHu7Q)
 
 2. Open Streamer.Bot and click on Import
 
@@ -52,9 +53,6 @@ Widget can be found in the [widget folder](/widget).
 
 ## Usage
 
-(Work in progress)
-
-
 ### Commands
 
 -   `!add [task]` : add the task to your list
@@ -73,6 +71,22 @@ Widget can be found in the [widget folder](/widget).
 -   `!clearold [days]` - Clear tasks that are at least `[days]` days old (e.g. `!clearold 7`)
 -   `!countold [days]` - Count tasks that are at least `[days]` days old (e.g. `!countold 7`)
 -   `!adel @user` - Remove all tasks from a user
+
+### Language
+
+Customize language [here](./languages.md)
+
+You can also customise the commands yourself on StreamerBot.
+
+### Commands Config
+
+Configure your commands! Command permissions, command aliases etc.
+
+![Commands](./images/permission.png)
+
+1. Click on Commands tab on StreamerBot
+2. Double click on a command you want to edit
+3. Configure the permission level, commands aliases, commands sources etc. 
 
 ## Support
 
