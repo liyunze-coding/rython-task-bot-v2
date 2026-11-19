@@ -594,10 +594,13 @@ public class TaskOperations
         taskData[key].Tasks = taskData[key].Tasks.Where(t => !t.Completed).ToList();
     }
 
+    // Tasks saved before timestamps were tracked deserialize with DateTime.MinValue and are never considered old.
+    private static bool IsTaskOld(Task task, DateTime cutoff) => task.AddedTime != DateTime.MinValue && task.AddedTime <= cutoff;
+
     public int CountOldTasks(int days)
     {
         DateTime cutoff = DateTime.Now.AddDays(-days);
-        return taskData.Values.Sum(user => user.Tasks.Count(t => t.AddedTime <= cutoff));
+        return taskData.Values.Sum(user => user.Tasks.Count(t => IsTaskOld(t, cutoff)));
     }
 
     public int ClearOldTasks(int days)
@@ -607,7 +610,7 @@ public class TaskOperations
         foreach (var key in taskData.Keys.ToList())
         {
             int before = taskData[key].Tasks.Count;
-            taskData[key].Tasks = taskData[key].Tasks.Where(t => t.AddedTime > cutoff).ToList();
+            taskData[key].Tasks = taskData[key].Tasks.Where(t => !IsTaskOld(t, cutoff)).ToList();
             removed += before - taskData[key].Tasks.Count;
         }
         return removed;
